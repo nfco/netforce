@@ -325,7 +325,7 @@ class Picking(Model):
                     "unit_price": line.cost_price_cur,
                     "tax_id": prod.purchase_tax_id.id,
                     "account_id": prod.purchase_account_id.id,
-                    "amount": line.qty * line.cost_price,
+                    "amount": line.qty * line.cost_price_cur,
                 }
                 inv_vals["lines"].append(("create", line_vals))
             inv_id = get_model("account.invoice").create(inv_vals, context=context)
