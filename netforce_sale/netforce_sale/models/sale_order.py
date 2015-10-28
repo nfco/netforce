@@ -711,13 +711,11 @@ class SaleOrder(Model):
     def onchange_contact(self, context):
         data = context["data"]
         contact_id = data.get("contact_id")
-        if not contact_id:
-            return {}
-        contact = get_model("contact").browse(contact_id)
-        data["payment_terms"] = contact.payment_terms
-        data["price_list_id"] = contact.sale_price_list_id.id
-        data["bill_address_id"] = contact.get_address(pref_type="billing")
-        data["ship_address_id"] = contact.get_address(pref_type="shipping")
+        contact = get_model("contact").browse(contact_id) if contact_id else None
+        data["payment_terms"] = contact.payment_terms if contact else None
+        data["price_list_id"] = contact.sale_price_list_id.id if contact else None
+        data["bill_address_id"] = contact.get_address(pref_type="billing") if contact else None
+        data["ship_address_id"] = contact.get_address(pref_type="shipping") if contact else None
         return data
 
     def check_delivered_qtys(self, ids, context={}):

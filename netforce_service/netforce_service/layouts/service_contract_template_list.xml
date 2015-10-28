@@ -1,8 +1,0 @@
-<list model="service.contract.template">
-    <field name="name"/>
-    <field name="description"/>
-    <field name="amount_labor"/>
-    <field name="amount_part"/>
-    <field name="amount_other"/>
-    <field name="amount_total"/>
-</list>

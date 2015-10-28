@@ -14,7 +14,6 @@
                 <field name="template_id" span="2" onchange="onchange_template"/>
                 <field name="number" span="2"/>
                 <field name="service_type_id" span="2"/>
-                <field name="contract_id" span="2"/>
                 <newline/>
                 <field name="state" onchange="onchange_state" span="2"/>
                 <field name="due_date" onchange="onchange_due_date" span="2"/>

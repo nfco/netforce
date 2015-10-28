@@ -29,8 +29,6 @@ from . import job_template
 from . import task_template
 from . import work_time
 from . import work_type
-from . import service_contract
-from . import service_contract_line
 from . import fault_code
 from . import service_type
 from . import time_sheet
@@ -40,8 +38,6 @@ from . import service_resource_alloc
 from . import job_part_template
 from . import job_template_line
 from . import job_line
-from . import service_contract_template
-from . import service_contract_template_job
 from . import report_service_time
 from . import service_create_quot
 from . import service_application

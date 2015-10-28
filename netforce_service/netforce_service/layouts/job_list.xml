@@ -5,7 +5,6 @@
     <field name="resource_id"/>
     <field name="due_date"/>
     <field name="service_type_id"/>
-    <field name="contract_id"/>
     <field name="priority"/>
     <field name="total_cost"/>
     <field name="amount_total"/>

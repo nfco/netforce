@@ -50,12 +50,7 @@ class JobTemplate(Model):
         obj = self.browse(ids)[0]
         contract = None
         item = None
-        if contract_line_id:
-            contract_line = get_model("service.contract.line").browse(contract_line_id)
-            contract = contract_line.contract_id
-            item = contract_line.service_item_id
-            contact_id = contract.contact_id.id
-        elif sale_id:
+        if sale_id:
             sale = get_model("sale.order").browse(sale_id)
             contact_id = sale.contact_id.id
         vals = {
@@ -65,7 +60,6 @@ class JobTemplate(Model):
             "service_type_id": obj.service_type_id.id,
             "state": "planned",
             "due_date": date,
-            "contract_id": contract.id if contract else None,
             "lines": [],
         }
         if sale_id:

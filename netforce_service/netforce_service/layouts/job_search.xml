@@ -3,7 +3,6 @@
     <field name="name"/>
     <field name="contact_id"/>
     <field name="service_type_id"/>
-    <field name="contract_id"/>
     <newline/>
     <field name="state"/>
     <field name="due_date"/>

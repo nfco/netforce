@@ -35,7 +35,6 @@
         <field name="addresses"/>
         <field name="lots"/>
         <field name="jobs" action="job"/>
-        <field name="contracts"/>
         <field name="documents">
             <list>
                 <field name="file" target="_blank"/>

@@ -1,6 +1,5 @@
 <inherit model="contact" inherit="contact_form">
     <field name="sale_orders" position="after">
-        <field name="contracts"/>
         <field name="projects"/>
         <field name="service_items" action="service_item"/>
     </field>

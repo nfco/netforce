@@ -2,7 +2,6 @@
     <field name="number"/>
     <field name="contact_id"/>
     <field name="service_type_id"/>
-    <field name="contract_id"/>
     <field name="date_open"/>
     <field name="date_close"/>
     <field name="labor_cost"/>

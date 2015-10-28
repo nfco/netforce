@@ -1,6 +1,0 @@
-<action>
-    <field name="string">Service Contract Templates</field>
-    <field name="view_cls">multi_view</field>
-    <field name="model">service.contract.template</field>
-    <field name="menu">service_menu</field>
-</action>

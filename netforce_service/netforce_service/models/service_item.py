@@ -59,8 +59,6 @@ class ServiceItem(Model):
         "est_counter_per_year": fields.Integer("Estimated Counter Per Year"),
         "est_counter": fields.Integer("Estimated Current Counter", function="get_est_counter"),
         "job_templates": fields.Many2Many("job.template", "Service Order Templates"),
-        "contract_lines": fields.One2Many("service.contract.line", "service_item_id", "Contract Lines"),
-        "contracts": fields.Many2Many("service.contract", "Contracts", function="get_contracts"),
         "industry_id": fields.Many2One("industry", "Industry", search=True),
         "application_id": fields.Many2One("service.application", "Application", search=True),
         "addresses": fields.One2Many("address", "related_id", "Addresses"),
@@ -151,15 +149,6 @@ class ServiceItem(Model):
         vals = {}
         for obj in self.browse(ids):
             vals[obj.id] = obj.job_items[0].job_id.id if obj.job_items else None
-        return vals
-
-    def get_contracts(self, ids, context={}):
-        vals = {}
-        for obj in self.browse(ids):
-            contracts = []
-            for line in obj.contract_lines:
-                contracts.append(line.contract_id.id)
-            vals[obj.id] = contracts
         return vals
 
 ServiceItem.register()

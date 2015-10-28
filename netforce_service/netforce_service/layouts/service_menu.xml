@@ -25,6 +25,5 @@
         <item string="Applications" action="service_application"/>
         <item string="Skill Levels" action="skill_level"/>
         <item string="Service Order Templates" action="job_template"/>
-        <item string="Service Contract Templates" action="service_contract_template"/>
     </item>
 </menu>

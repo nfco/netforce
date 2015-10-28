@@ -1,7 +1,0 @@
-<action>
-    <field name="view_cls">multi_view</field>
-    <field name="string">Service Contracts</field>
-    <field name="model">service.contract</field>
-    <field name="tabs">[["All",[]],["Draft",[["state","=","draft"]]],["Confirmed",[["state","=","confirmed"]]]]</field>
-    <field name="menu">service_menu</field>
-</action>

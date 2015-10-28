@@ -85,7 +85,6 @@ class Job(Model):
         "complaints": fields.Text("Complaints"),
         "cause": fields.Text("Cause"),
         "correction": fields.Text("Correction"),
-        "contract_id": fields.Many2One("service.contract", "Contract", search=True),
         "amount_total": fields.Decimal("Total Selling", function="get_total", function_multi=True),
         "amount_contract": fields.Decimal("Included In Contract", function="get_total", function_multi=True),
         "amount_job": fields.Decimal("Not Included In Contract", function="get_total", function_multi=True),
