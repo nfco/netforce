@@ -296,9 +296,10 @@ class PurchaseOrder(Model):
             if remain_qty <= 0:
                 continue
             unit_price=line.amount/line.qty if line.qty else 0
-            if obj.tax_type=="tax_ex":
-                cost_price_cur=unit_price
-            elif obj.tax_type=="tax_in":
+            cost_price_cur=unit_price
+            #if obj.tax_type=="tax_ex":
+                #cost_price_cur=unit_price
+            if obj.tax_type=="tax_in":
                 if line.tax_id:
                     tax_amt = get_model("account.tax.rate").compute_tax(
                         line.tax_id.id, unit_price, tax_type=obj.tax_type)
