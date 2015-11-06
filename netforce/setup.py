@@ -32,6 +32,6 @@ setup(name="netforce",
         "python-dateutil>=2.1",
         "psutil>=1.2.1",
         "pyinotify>=0.9.4",
-        "pillow>=2.3.0",
+        "pillow==2.4.0",
     ],
 )

@@ -4,5 +4,6 @@
         <field name="contact_id" span="2"/>
         <field name="period_days" span="2"/>
         <field name="num_periods" span="2"/>
+        <field name="contact_categ_id" span="2"/>
     </group>
 </form>

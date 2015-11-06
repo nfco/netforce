@@ -58,6 +58,7 @@ class ReportARDetails(Model):
     _fields = {
         "date": fields.Date("Date", required=True),
         "contact_id": fields.Many2One("contact", "Contact"),
+        "contact_categ_id": fields.Many2One("contact.categ", "Contact Categories"),
         "period_days": fields.Integer("Period Days", required=True),
         "num_periods": fields.Integer("Number of Periods", required=True),
     }
@@ -84,6 +85,9 @@ class ReportARDetails(Model):
         contact_id = params.get("contact_id")
         if contact_id:
             contact_id = int(contact_id)
+        contact_categ_id = params.get("contact_categ_id")
+        if contact_categ_id:
+            contact_categ_id = int(contact_categ_id)
         period_days = params.get("period_days", 30)
         num_periods = params.get("num_periods", 3)
         periods = get_periods(date, period_days, num_periods)
@@ -96,6 +100,9 @@ class ReportARDetails(Model):
         if contact_id:
             q += " AND l.contact_id=%s"
             args.append(contact_id)
+        if contact_categ_id:
+            q += " AND p.categ_id=%s"
+            args.append(contact_categ_id)
         q += " ORDER BY m.date"
         res = db.query(q, *args)
         contacts = {}
