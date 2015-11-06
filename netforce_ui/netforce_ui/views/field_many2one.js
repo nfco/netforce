@@ -559,6 +559,11 @@ var FieldMany2One=NFView.extend({
         this.hide_menu(); 
         log("m2o.blur before trigger");
         this.trigger("blur");
+        var form=this.context.form;
+        if (this.options.onchange) {
+            var path=model.get_path(name);
+            form.do_onchange(this.options.onchange,path);
+        }
     },
 
     focus: function() {
