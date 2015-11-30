@@ -51,6 +51,7 @@
         </tab>
     </tabs>
     <related>
+        <field name="milestones"/>
         <field name="jobs"/>
         <field name="tasks"/>
         <field name="work_time"/>

@@ -50,6 +50,7 @@ class Project(Model):
         "est_track_balance": fields.Decimal("Tracking Balance",function="_get_related",function_context={"path":"est_track_id.balance"}),
         "issues": fields.One2Many("issue","project_id","Issues"),
         "resources": fields.Many2Many("service.resource","Resources"),
+        "milestones": fields.One2Many("project.milestone","project_id","Milestones"),
     }
     _order = "start_date"
 
