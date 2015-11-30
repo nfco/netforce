@@ -1,0 +1,8 @@
+<action>
+    <field name="string">Project Milestones</field>
+    <field name="view_cls">multi_view</field>
+    <field name="model">project</field>
+    <field name="tabs">[["All",[]],["Planned",[["state","=","planned"]]],["In Progress",[["state","=","in_progress"]]],["Completed",[["state","=","done"]]]]</field>
+    <field name="modes">list,page,form</field>
+    <field name="menu">service_menu</field>
+</action>

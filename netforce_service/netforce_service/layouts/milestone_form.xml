@@ -1,0 +1,74 @@
+<form model="project.milestone">
+    <head>
+        <field name="state"/>
+        <button string="Options" dropdown="1">
+            <item string="Create Actual Cost Tracking Code" method="create_track"/>
+            <item string="Create Estimate Cost Tracking Code" method="create_est_track"/>
+        </button>
+    </head>
+    <tabs string="General">
+        <tab string="General">
+            <field name="project_id"/>
+            <field name="sequence"/>
+            <field name="name"/>
+            <field name="description"/>
+            <newline/>
+            <field name="plan_date_from"/>
+            <field name="plan_date_to"/>
+            <field name="act_date_from"/>
+            <field name="act_date_to"/>
+            <field name="state"/>
+        </tab>
+        <tab string="Costing">
+            <separator string="Estimate Costs"/>
+            <field name="est_track_id"/>
+            <field name="est_track_balance"/>
+            <field name="est_track_entries" nolabel="1">
+                <list>
+                    <field name="date"/>
+                    <field name="track_id" condition='[["id","child_of",parent.est_track_id]]'/>
+                    <field name="related_id"/>
+                    <field name="product_id"/>
+                    <field name="description"/>
+                    <field name="qty"/>
+                    <field name="uom_id"/>
+                    <field name="amount"/>
+                </list>
+            </field>
+            <separator string="Actual Costs"/>
+            <field name="track_id"/>
+            <field name="track_balance"/>
+            <field name="track_entries" nolabel="1">
+                <list>
+                    <field name="date"/>
+                    <field name="track_id" condition='[["id","child_of",parent.track_id]]'/>
+                    <field name="related_id"/>
+                    <field name="product_id"/>
+                    <field name="description"/>
+                    <field name="qty"/>
+                    <field name="uom_id"/>
+                    <field name="amount"/>
+                </list>
+            </field>
+        </tab>
+    </tabs>
+    <related>
+        <field name="documents">
+            <list>
+                <field name="file" target="_blank"/>
+                <field name="categ_id"/>
+                <field name="description"/>
+                <field name="date"/>
+                <field name="expiry_date"/>
+            </list>
+            <form>
+                <field name="categ_id"/>
+                <field name="file" target="_blank" onchange="onchange_file"/>
+                <field name="date"/>
+                <field name="description"/>
+                <field name="expiry_date"/>
+            </form>
+        </field>
+        <field name="comments"/>
+    </related>
+</form>

@@ -27,6 +27,7 @@ class PaymentMethod(Model):
     _fields = {
         "name": fields.Char("Name", required=True, search=True),
         "code": fields.Char("Code", search=True),
+        "sequence": fields.Integer("Sequence"),
         "type": fields.Selection([["bank", "Bank Transfer"], ["credit_card", "Credit Card"], ["paypal", "Paypal"],["scb_gateway","SCB Gateway"], ["paysbuy","Paysbuy"]], "Type", search=True),
         "comments": fields.One2Many("message", "related_id", "Comments"),
         "account_id": fields.Many2One("account.account","Account"),
@@ -43,6 +44,6 @@ class PaymentMethod(Model):
         "scb_terminal": fields.Char("Terminal ID"),
         "scb_url": fields.Selection([["test", "Test URL"], ["production", "Production URL"]], "Server URL"),
     }
-    _order = "name"
+    _order = "sequence,name"
 
 PaymentMethod.register()

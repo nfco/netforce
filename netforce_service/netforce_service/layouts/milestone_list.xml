@@ -1,0 +1,10 @@
+<list model="project.milestone">
+    <field name="project_id"/>
+    <field name="sequence"/>
+    <field name="name"/>
+    <field name="plan_date_from"/>
+    <field name="plan_date_to"/>
+    <field name="act_date_from"/>
+    <field name="act_date_to"/>
+    <field name="state"/>
+</list>

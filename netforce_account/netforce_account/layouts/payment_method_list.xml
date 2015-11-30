@@ -1,4 +1,5 @@
 <list model="payment.method">
+    <field name="sequence"/>
     <field name="name"/>
     <field name="code"/>
     <field name="type"/>

@@ -1545,6 +1545,7 @@ class Model(object):
     def audit_log(self, operation, params, context={}):
         if not self._audit_log:
             return
+        related_id=None
         if self._string:
             model_name = self._string
         else:
@@ -1552,6 +1553,7 @@ class Model(object):
         if operation == "create":
             msg = "%s %d created" % (model_name, params["id"])
             details = utils.json_dumps(params["vals"])
+            related_id="%s,%d"%(self._name,params["id"])
         elif operation == "delete":
             msg = "%s %s deleted" % (model_name, ",".join([str(x) for x in params["ids"]]))
             details = ""
@@ -1561,6 +1563,8 @@ class Model(object):
                 return
             msg = "%s %s changed" % (model_name, ",".join([str(x) for x in params["ids"]]))
             details = utils.json_dumps(params["vals"])
+            if params["ids"]:
+                related_id="%s,%d"%(self._name,params["ids"][0]) # XXX
         if operation == "sync_create":
             msg = "%s %d created by remote sync" % (model_name, params["id"])
             details = utils.json_dumps(params["vals"])
@@ -1573,7 +1577,7 @@ class Model(object):
                 return
             msg = "%s %s changed by remote sync" % (model_name, ",".join([str(x) for x in params["ids"]]))
             details = utils.json_dumps(params["vals"])
-        netforce.logger.audit_log(msg, details)
+        netforce.logger.audit_log(msg, details, related_id=related_id)
 
     def get_view(self, name=None, type=None, context={}):  # XXX: remove this
         #print("get_view model=%s name=%s type=%s"%(self._name,name,type))

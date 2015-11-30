@@ -1,6 +1,7 @@
 <form model="payment.method">
     <field name="name"/>
     <field name="code"/>
+    <field name="sequence"/>
     <field name="type"/>
     <field name="account_id"/>
     <group attrs='{"invisible": [["type","!=","paypal"]]}'>

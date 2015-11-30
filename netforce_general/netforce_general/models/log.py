@@ -35,13 +35,14 @@ class Log(Model):
         "message": fields.Text("Message", required=True, search=True),
         "details": fields.Text("Details", search=True),
         "comments": fields.One2Many("message", "related_id", "Comments"),
+        "related_id": fields.Reference([],"Related To"),
     }
     _defaults = {
         "date": lambda *a: time.strftime("%Y-%m-%d %H:%M:%S"),
     }
     _order = "id desc"
 
-    def log(self, msg, details=None, ip_addr=None):
+    def log(self, msg, details=None, ip_addr=None, related_id=None):
         uid = get_active_user()
         if not ip_addr:
             ip_addr = get_ip_addr()
@@ -58,6 +59,7 @@ class Log(Model):
             "message": msg,
             "details": details,
             "country_id": country_id,
+            "related_id": related_id,
         }
         set_active_user(1)
         self.create(vals)

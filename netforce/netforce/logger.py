@@ -28,5 +28,5 @@ def log(level, msg):  # XXX: deprecated
         logging.warning(msg)
 
 
-def audit_log(msg, details=None):  # XXX: deprecated
-    get_model("log").log(msg, details)
+def audit_log(msg, details=None, related_id=None):  # XXX: deprecated
+    get_model("log").log(msg, details, related_id=related_id)

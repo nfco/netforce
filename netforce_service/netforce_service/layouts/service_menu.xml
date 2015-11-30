@@ -2,6 +2,7 @@
     <item string="Dashboard" action="service_board"/>
     <item string="Services">
         <item string="Projects" action="project"/>
+        <item string="Project Milestones" action="milestone"/>
         <item string="Service Items" action="service_item"/>
         <item string="Service Orders" action="job"/>
         <item string="Tasks" action="task"/>

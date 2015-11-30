@@ -140,6 +140,6 @@ class Currency(Model):
 
     def round(self, cur_id, amt):
         decimal.getcontext().rounding=ROUND_UP
-        return amt.quantize(Decimal("0.01"))
+        return Decimal(amt).quantize(Decimal("0.01"))
 
 Currency.register()

@@ -5,6 +5,7 @@
     <field name="country_id"/>
     <field name="message"/>
     <field name="details"/>
+    <field name="related_id"/>
     <related>
         <field name="comments"/>
     </related>

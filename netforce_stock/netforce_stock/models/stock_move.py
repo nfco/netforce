@@ -353,8 +353,6 @@ class Move(Model):
                 pick_ids.append(move.picking_id.id)
         lines=[]
         for (acc_id,track_id,desc),amt in accounts.items():
-            if amt==0:
-                continue
             lines.append({
                 "description": desc,
                 "account_id": acc_id,
