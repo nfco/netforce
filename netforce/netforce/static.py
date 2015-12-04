@@ -44,6 +44,7 @@ from .access import get_active_user, set_active_user
 import netforce
 
 mimetypes.add_type("application/x-font-woff", ".woff")
+mimetypes.add_type("application/x-font-woff", ".woff2")
 mimetypes.add_type("font/opentype", ".ttf")
 mimetypes.add_type("text/cache-manifest", ".appcache")
 mimetypes.add_type("text/plain", ".log")

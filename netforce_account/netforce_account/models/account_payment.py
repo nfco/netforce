@@ -284,7 +284,7 @@ class Payment(Model):
             wht = get_model("currency").round(obj.currency_id.id, wht)
             vals["amount_subtotal"] = subtotal
             vals["amount_tax"] = vat
-            vals["amount_total"] = total # should be equal to subtotal + vat, compute separately because rounding
+            vals["amount_total"] = subtotal + vat
             vals["amount_wht"] = wht
             vals["amount_payment"] = vals["amount_total"] - wht
             res[obj.id] = vals
