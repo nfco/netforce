@@ -284,3 +284,11 @@ a.nf-list-header {
 .nf-table-container {
     overflow-x: auto;
 }
+
+[data-readonly="1"] {
+    background-color: whitesmoke;
+}
+
+.nf-required-field input, .nf-required-field select, td.nf-required-field {
+    background-color: #ffffcc;
+}

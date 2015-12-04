@@ -59,7 +59,7 @@ class Move(Model):
         "qty2": fields.Decimal("Qty2"),
         "company_id": fields.Many2One("company", "Company"), # XXX: deprecated
         "invoice_id": fields.Many2One("account.invoice", "Invoice"),
-        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["production.order", "Production Order"], ["job", "Service Order"], ["account.invoice", "Invoice"], ["pawn.loan", "Loan"]], "Related To"),
+        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["job", "Service Order"], ["account.invoice", "Invoice"], ["pawn.loan", "Loan"]], "Related To"),
         "number": fields.Char("Number", required=True, search=True),
         "journal_id": fields.Many2One("stock.journal", "Journal", required=True, search=True),
         "alloc_costs": fields.One2Many("landed.cost.alloc","move_id","Allocated Costs"),
@@ -293,16 +293,6 @@ class Move(Model):
             move_id=self.create(vals)
             move_ids.append(move_id)
         self.set_done(move_ids)
-
-    def get_production_orders(self, ids, context={}):
-        prod_ids = []
-        for obj in self.browse(ids):
-            prod_ids.append(obj.product_id.id)
-        prod_ids = list(set(prod_ids))
-        production_ids = []
-        for comp in get_model("production.component").search_browse([["product_id", "in", prod_ids]]):
-            production_ids.append(comp.order_id.id)
-        return list(set(production_ids))
 
     def get_alloc_cost_amount(self,ids,context={}):
         vals={}

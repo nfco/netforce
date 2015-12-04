@@ -34,7 +34,7 @@ class ReportStockMove(Model):
         "location_from_id": fields.Many2One("stock.location", "Location From"),
         "location_to_id": fields.Many2One("stock.location", "Location To"),
         "ref": fields.Char("Ref"),
-        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["production.order", "Production Order"], ["job", "Service Order"], ["account.invoice", "Invoice"]], "Related To"),
+        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["job", "Service Order"], ["account.invoice", "Invoice"]], "Related To"),
         "show_loss_only": fields.Boolean("Show Loss Qty Only"),
     }
 

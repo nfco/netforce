@@ -33,7 +33,7 @@ class Transform(Model):
         "location_id": fields.Many2One("stock.location", "Location", condition=[["type", "=", "internal"]], search=True, required=True),
         "container_id": fields.Many2One("stock.container", "Container"),
         "state": fields.Selection([["draft", "Draft"], ["done", "Completed"], ["voided", "Voided"]], "Status", required=True),
-        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["production.order", "Production Order"], ["job", "Service Order"], ["product.claim", "Claim Bill"], ["product.borrow", "Borrow Request"], ["stock.picking", "Picking"]], "Related To"),
+        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"],["job", "Service Order"], ["product.claim", "Claim Bill"], ["product.borrow", "Borrow Request"], ["stock.picking", "Picking"]], "Related To"),
         "stock_moves": fields.One2Many("stock.move", "related_id", "Stock Movements"),
         "source_lines": fields.One2Many("stock.transform.source", "transform_id", "Source Lines"),
         "target_lines": fields.One2Many("stock.transform.target", "transform_id", "Target Lines"),

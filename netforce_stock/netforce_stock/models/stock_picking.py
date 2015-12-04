@@ -43,7 +43,7 @@ class Picking(Model):
         "move_id": fields.Many2One("account.move", "Journal Entry"),
         "product_id": fields.Many2One("product", "Product", store=False, function_search="search_product"),
         "comments": fields.One2Many("message", "related_id", "Comments"),
-        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["production.order", "Production Order"], ["job", "Service Order"], ["product.claim", "Claim Bill"], ["product.borrow", "Borrow Request"], ["stock.picking", "Picking"]], "Related To"),
+        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["project","Project"], ["job", "Service Order"], ["product.claim", "Claim Bill"], ["product.borrow", "Borrow Request"], ["stock.picking", "Picking"]], "Related To"),
         "currency_id": fields.Many2One("currency", "Currency", required=True),
         "addresses": fields.One2Many("address", "related_id", "Addresses"),
         "ship_address_id": fields.Many2One("address", "Shipping Address"),
@@ -187,9 +187,6 @@ class Picking(Model):
             obj.set_currency_rate()
         self.check_order_qtys(ids)
         self.create_bundle_pickings(ids)
-        production_ids=self.get_update_production_orders(ids)
-        if production_ids:
-            get_model("production.order").update_status(production_ids)
         self.trigger(ids,"done")
 
     def check_order_qtys(self, ids, context={}):
@@ -585,17 +582,6 @@ class Picking(Model):
         obj = self.browse(ids)[0]
         user_id = get_active_user()
         obj.write({"done_approved_by_id": user_id})
-
-    def get_update_production_orders(self, ids, context={}):
-        prod_ids = []
-        for obj in self.browse(ids):
-            for line in obj.lines:
-                prod_ids.append(line.product_id.id)
-        prod_ids = list(set(prod_ids))
-        production_ids = []
-        for comp in get_model("production.component").search_browse([["product_id", "in", prod_ids]]):
-            production_ids.append(comp.order_id.id)
-        return list(set(production_ids))
 
     def view_journal_entry(self,ids,context={}):
         obj=self.browse(ids)[0]

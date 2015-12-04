@@ -54,6 +54,9 @@ var SheetLine=NFView.extend({
             if (field.type=="float") {
                 f.align="right";
             }
+            if (field.required) {
+                f.required=true;
+            }
         });
         this.$el.data("model-cid",model.cid);
     },

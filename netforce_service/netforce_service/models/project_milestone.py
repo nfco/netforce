@@ -33,8 +33,8 @@ class Milestone(Model):
         "description": fields.Text("Description",search=True),
         "plan_date_from": fields.Date("Planned Start Date"),
         "plan_date_to": fields.Date("Planned End Date"),
-        "act_date_from": fields.Date("Planned Start Date"),
-        "act_date_to": fields.Date("Planned End Date"),
+        "act_date_from": fields.Date("Actual Start Date"),
+        "act_date_to": fields.Date("Actual End Date"),
         "track_id": fields.Many2One("account.track.categ","Tracking Category"),
         "track_entries": fields.One2Many("account.track.entry",None,"Actual Cost Tracking Entries",function="get_track_entries",function_write="write_track_entries"),
         "track_balance": fields.Decimal("Tracking Balance",function="_get_related",function_context={"path":"track_id.balance"}),
@@ -105,6 +105,7 @@ class Milestone(Model):
             track_id=get_model("account.track.categ").create({
                 "code": code,
                 "name": code,
+                "parent_id": parent_track.id,
                 "type": "1",
                 })
         obj.write({"est_track_id": track_id})

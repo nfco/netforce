@@ -112,7 +112,8 @@ var FieldMany2One=NFView.extend({
         if (attrs.required!=null) required=attrs.required;
         //log("XXXXXXXXXXXXXXXXXX",required);
         if (required && !this.data.readonly) {
-            this.data.required=true;
+            this.$el.addClass("nf-required-field");
+        /*this.data.required=true;*/
         } else {
             this.data.required=false;
         }

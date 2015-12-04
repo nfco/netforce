@@ -505,6 +505,8 @@ class Payment(Model):
                     "track_id": line.track_id.id,
                     "track2_id": line.track2_id.id,
                 }
+                if line.type=="prepay":
+                    line_vals["contact_id"]=obj.contact_id.id
                 print("direct")
                 pprint(line_vals)
                 get_model("account.move.line").create(line_vals)

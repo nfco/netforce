@@ -133,13 +133,6 @@ class StockOrder(Model):
                 if not prod.purchase_lead_time:
                     raise Exception("Missing purchase lead time for product %s"%prod.code)
                 order_date=(datetime.strptime(req_date,"%Y-%m-%d")-timedelta(days=prod.purchase_lead_time)).strftime("%Y-%m-%d")
-            elif prod.supply_method=="production":
-                supply_method="Production"
-                order_uom=prod.uom_id
-                order_qty=req_qty
-                if not prod.mfg_lead_time:
-                    raise Exception("Missing manufacturing lead time for product %s"%prod.code)
-                order_date=(datetime.strptime(req_date,"%Y-%m-%d")-timedelta(days=prod.mfg_lead_time)).strftime("%Y-%m-%d")
             else:
                 raise Exception("Invalid supply method")
             line_vals={
@@ -171,19 +164,6 @@ class StockOrder(Model):
             n+=1
         return {
             "flash": "%d lines added"%n,
-        }
-
-    def create_orders(self,ids,context={}):
-        print("create_orders",ids)
-        obj=self.browse(ids[0])
-        res=obj.create_po()
-        num_po=res["num_orders"]
-        res=obj.create_mo()
-        num_mo=res["num_orders"]
-        msg="Stock ordering: %d purchase orders and %s production orders created"%(num_po,num_mo)
-        audit_log(msg)
-        return {
-            "flash": msg,
         }
 
     def create_po(self,ids,context={}):
@@ -239,54 +219,6 @@ class StockOrder(Model):
             "num_orders": n,
         }
 
-    def create_mo(self,ids,context={}):
-        obj=self.browse(ids[0])
-        n=0
-        for line in obj.lines:
-            if line.supply_method!="production":
-                continue
-            prod = line.product_id
-            res=get_model("bom").search([["product_id","=",prod.id]])
-            if not res:
-                raise Exception("BoM not found for product '%s'" % prod.name)
-            bom_id = res[0]
-            bom = get_model("bom").browse(bom_id)
-            loc_id = bom.location_id.id
-            if not loc_id:
-                raise Exception("Missing FG location in BoM %s" % bom.number)
-            routing = bom.routing_id
-            if not routing:
-                raise Exception("Missing routing in BoM %s" % bom.number)
-            loc_prod_id = routing.location_id.id
-            if not loc_prod_id:
-                raise Exception("Missing production location in routing %s" % routing.number)
-            uom = prod.uom_id
-            order_date=line.date
-            if not prod.mfg_lead_time:
-                raise Exception("Missing manufacturing lead time in product %s"%prod.code)
-            due_date=(datetime.strptime(order_date,"%Y-%m-%d")+timedelta(days=prod.mfg_lead_time)).strftime("%Y-%m-%d")
-            order_vals = {
-                "product_id": prod.id,
-                "qty_planned": line.qty,
-                "uom_id": line.uom_id.id,
-                "bom_id": bom_id,
-                "routing_id": routing.id,
-                "production_location_id": loc_prod_id,
-                "location_id": loc_id,
-                "order_date": order_date,
-                "due_date": due_date,
-                "state": "waiting_confirm",
-            }
-            order_id = get_model("production.order").create(order_vals)
-            get_model("production.order").create_components([order_id])
-            get_model("production.order").create_operations([order_id])
-            if obj.confirm_orders:
-                get_model("production.order").confirm([order_id])
-            n+=1
-        return {
-            "num_orders": n,
-        }
-
     def auto_create_purchase_orders(self,context={}):
         access.set_active_user(1)
         access.set_active_company(1) # XXX
@@ -298,26 +230,6 @@ class StockOrder(Model):
         self.fill_products([obj_id])
         self.create_po([obj_id])
 
-    def auto_create_production_orders(self,context={}):
-        access.set_active_user(1)
-        access.set_active_company(1) # XXX
-        vals={
-            "confirm_orders": True,
-        }
-        obj_id=self.create(vals)
-        self.delete_planned_orders([obj_id])
-        self.fill_products([obj_id])
-        self.create_mo([obj_id])
-
-    def delete_planned_orders(self,ids,context={}):
-        res=self.delete_planned_po()
-        num_po=res["num_orders"]
-        self.delete_planned_mo()
-        num_mo=res["num_orders"]
-        return {
-            "flash": "%d purchase orders and %s production orders deleted"%(num_po,num_mo),
-        }
-
     def delete_planned_po(self,context={}):
         d=datetime.today().strftime("%Y-%m-%d")
         n=0
@@ -327,22 +239,6 @@ class StockOrder(Model):
                 pick.delete()
             purch.to_draft()
             purch.delete()
-            n+=1
-        return {
-            "num_orders": n,
-        }
-
-    def delete_planned_mo(self,context={}):
-        d=datetime.today().strftime("%Y-%m-%d")
-        n=0
-        for order in get_model("production.order").search_browse([["order_date",">=",d]]):
-            if order.state in ("in_progress","done"):
-                continue
-            for pick in order.pickings:
-                pick.void()
-                pick.delete()
-            order.to_draft()
-            order.delete()
             n+=1
         return {
             "num_orders": n,

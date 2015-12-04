@@ -27,7 +27,7 @@ class Barcode(Model):
     _fields = {
         "station_id": fields.Many2One("barcode.station", "Barcode Station", required=True),
         "type": fields.Selection([["in", "Goods Receipt"], ["internal", "Goods Transfer"], ["out", "Goods Issue"]], "Transaction Type"),
-        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["production.order", "Production Order"], ["stock.picking", "Picking"]], "Related To"),
+        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["stock.picking", "Picking"]], "Related To"),
         "location_to_id": fields.Many2One("stock.location", "To Location"),
         "location_from_id": fields.Many2One("stock.location", "From Location"),
         "container_from_id": fields.Many2One("stock.container", "From Container"),
@@ -53,16 +53,8 @@ class Barcode(Model):
 
     def onchange_related(self, context={}):
         data = context["data"]
-        type = data["type"]
-        val = data["related_id"][0]
-        relation, rel_id = val.split(",")
-        rel_id = int(rel_id)
-        if relation == "production.order":
-            rel = get_model("production.order").browse(rel_id)
-            if type == "out":
-                data["location_to_id"] = rel.production_location_id.id
-            elif type == "in":
-                data["location_from_id"] = rel.production_location_id.id
+        """ Other module can use
+        """
         return data
 
     def onchange_container_from(self, context={}):

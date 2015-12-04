@@ -19,22 +19,16 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from netforce.model import Model, fields, get_model
+from netforce.database import get_connection
+from dateutil.relativedelta import *
+from datetime import *
 
 
-class BarcodeValidateLine(Model):
-    _name = "barcode.validate.line"
-    _transient = True
+class ReportStockMove(Model):
+    _inherit= "report.stock.move"
     _fields = {
-        "wizard_id": fields.Many2One("barcode.validate", "Wizard", required=True, on_delete="cascade"),
-        "product_id": fields.Many2One("product", "Product", required=True),
-        "qty_planned": fields.Decimal("Planned Qty", required=True, readonly=True),
-        "qty_actual": fields.Decimal("Validated Qty"),
-        "uom_id": fields.Many2One("uom", "UoM", required=True),
-        "lot_id": fields.Many2One("stock.lot", "Lot / Serial Number"),
-        "container_to_id": fields.Many2One("stock.container", "Container"),
-        "location_from_id": fields.Many2One("stock.location", "From Location"),
-        "location_to_id": fields.Many2One("stock.location", "To Location"),
-        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["job", "Service Order"], ["product.claim", "Claim Bill"], ["product.borrow", "Borrow Request"], ["stock.picking", "Picking"]], "Related To"),
+        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["production.order", "Production Order"], ["job", "Service Order"], ["account.invoice", "Invoice"]], "Related To"),
     }
 
-BarcodeValidateLine.register()
+ReportStockMove.register()
+
