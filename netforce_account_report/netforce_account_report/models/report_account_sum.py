@@ -105,8 +105,11 @@ class ReportAccountSum(Model):
             "track_id": track_id,
             "track2_id": track2_id,
             "account_name": account.name,
+            "company_currency_code": settings.currency_id.code, 
+            "account_currency_code": account.currency_id.code, 
             "lines": [],
             "total": 0,
+            "total_cur": 0,
         }
         d0 = datetime.strptime(date_from, "%Y-%m-%d")
         d2 = datetime.strptime(date_to, "%Y-%m-%d")
@@ -121,17 +124,20 @@ class ReportAccountSum(Model):
                 "track_id": track_id,
                 "track2_id": track2_id,
             }
-            acc = get_model("account.account").read([account_id], ["balance"], context=ctx)[0]
+            acc = get_model("account.account").read([account_id], ["balance","balance_cur"], context=ctx)[0]
             balance = acc["balance"]
+            balance_cur = acc["balance_cur"]
             line = {
                 "account_id": account_id,
                 "month": d0.strftime("%B %Y"),
                 "balance": balance,
+                "balance_cur": balance_cur,
                 "date_from": d0.strftime("%Y-%m-%d"),
                 "date_to": d1.strftime("%Y-%m-%d"),
             }
             data["lines"].append(line)
             data["total"] += line["balance"]
+            data["total_cur"] += line["balance_cur"]
             d0 = d1 + timedelta(days=1)
         return data
 

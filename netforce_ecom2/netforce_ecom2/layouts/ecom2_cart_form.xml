@@ -2,7 +2,7 @@
     <head>
         <field name="state"/>
         <button string="Options" dropdown="1">
-            <item string="Copy To Sales Order" method="copy_to_sale"/>
+            <item string="To Draft" method="to_draft" states="confirmed"/>
         </button>
     </head>
     <tabs>
@@ -35,6 +35,9 @@
         <tab string="Other">
         </tab>
     </tabs>
+    <foot>
+        <button string="Confirm Order" method="confirm"/>
+    </foot>
     <related>
         <field name="sale_orders"/>
         <field name="logs"/>

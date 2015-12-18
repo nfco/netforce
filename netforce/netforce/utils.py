@@ -551,3 +551,17 @@ class XmlRpcCookieTransport(xmlrpc.client.Transport):
             cookie = header.split(";", 1)[0]
             self._cookies.append(cookie)
         return super().parse_response(response)
+
+def create_thumbnails(fname):
+    print("create_thumbnails",fname)
+    dbname = database.get_active_db()
+    if not dbname:
+        return None
+    fdir = os.path.join(os.getcwd(), "static", "db", dbname, "files")
+    path=os.path.join(fdir,fname)
+    basename,ext=os.path.splitext(fname)
+    for s in [512,256,128,64,32]:
+        fname_thumb = basename + "-resize-%s"%s + ext
+        path_thumb = os.path.join(fdir, fname_thumb)
+        print("path_thumb",path_thumb)
+        os.system(r"convert -resize %sx%s\> '%s' '%s'" % (s,s,path, path_thumb))

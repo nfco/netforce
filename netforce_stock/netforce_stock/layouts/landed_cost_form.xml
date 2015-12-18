@@ -1,6 +1,7 @@
 <form model="landed.cost" attrs='{"readonly":[["state","in",["posted","reversed"]]]}'>
     <head>
         <field name="state"/>
+        <button string="Print" icon="print" action="report_landed_cost_form"/>
         <button string="Options" dropdown="1">
             <item string="To Draft" method="to_draft" states="posted,reversed"/>
             <item string="Copy To Actual Landed Costs" method="copy_to_actual"/>

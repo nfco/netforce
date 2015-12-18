@@ -18,7 +18,7 @@
     <tabs>
         <tab string="General">
             <group form_layout="stacked">
-                <field name="contact_id" span="2" create="1"/>
+                <field name="contact_id" span="2" create="1" condition='[["supplier", "=", "True"]]'/>
                 <field name="bill_address_id" span="2" condition='[["contact_id", "=", contact_id], ["contact_id", "!=", null]]'/>
                 <field name="date" span="2" onchange="onchange_date"/>
                 <field name="number" span="2"/>

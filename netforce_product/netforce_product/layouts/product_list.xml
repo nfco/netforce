@@ -3,6 +3,7 @@
         <button string="Print Labels" icon="print" action="product_label" action_options="convert=pdf"/>
         <button string="Approve" method="approve" icon="ok" perm="approve_product"/>
         <button string="Draft" method="to_draft"/>
+        <button string="Create Thumbnails" method="create_thumbnails" icon="th"/>
     </head>
     <field name="code"/>
     <field name="name"/>

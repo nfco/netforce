@@ -42,6 +42,7 @@ class Currency(Model):
     _string = "Currency"
     _key = ["name"]
     _name_field = "code"
+    _audit_log = True
     _fields = {
         "name": fields.Char("Name", required=True, search=True),
         "code": fields.Char("Code", required=True, search=True),

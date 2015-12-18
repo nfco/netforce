@@ -700,6 +700,11 @@ class Invoice(Model):
         elif data["type"] == "in":
             data["journal_id"] = contact.purchase_journal_id.id
         self.onchange_journal(context=context)
+        if contact.currency_id:
+            data["currency_id"] = contact.currency_id.id
+        else:
+            settings = get_model("settings").browse(1)
+            data["currency_id"] = settings.currency_id.id
         return data
 
     def view_invoice(self, ids, context={}):

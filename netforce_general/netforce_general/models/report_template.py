@@ -45,6 +45,7 @@ class ReportTemplate(Model):
             ["pay_slip", "Pay Slip"],
             ["tax_detail", "Tax Detail"],
             ["hr_expense", "HR Expense"],
+            ["landed_cost","Landed Cost"],
             ["other", "Other"]], "Template Type", required=True, search=True),
         "format": fields.Selection([["odt", "ODT (old)"], ["odt2", "ODT"], ["ods", "ODS"], ["docx", "DOCX (old)"], ["xlsx", "XLSX"], ["jrxml", "JRXML (old)"], ["jrxml2", "JRXML"]], "Template Format", required=True, search=True),
         "file": fields.File("Template File"),
