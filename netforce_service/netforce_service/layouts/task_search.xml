@@ -1,5 +1,4 @@
 <search model="task">
-    <field name="employee_id" select="1"/>
+    <field name="resource_id"/>
     <field name="state"/>
-    <field name="deadline"/>
 </search>

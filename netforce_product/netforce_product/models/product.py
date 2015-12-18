@@ -21,13 +21,13 @@
 from netforce.model import Model, fields, get_model
 from netforce import database
 from netforce.database import get_active_db
+from netforce import utils
 import os.path
 from PIL import Image, ImageChops
 from netforce import access
 from decimal import Decimal
 import time
 import math
-
 
 class Product(Model):
     _name = "product"
@@ -546,5 +546,12 @@ class Product(Model):
             factor=obj.sale_to_invoice_uom_factor or 1
             vals[obj.id]=math.ceil((obj.sale_price or 0)*factor)
         return vals
+
+    def create_thumbnails(self,ids,context={}):
+        print("Product.create_thumbnails",ids)
+        for obj in self.browse(ids):
+            if not obj.image:
+                continue
+            utils.create_thumbnails(obj.image)
 
 Product.register()

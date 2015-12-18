@@ -1,4 +1,4 @@
-<list model="account.move.line">
+<list model="account.move.line" colors='{"#cfc":[["is_account_reconciled","=",true]],"#fcc":[["is_account_reconciled","=",false],["reconcile_id","!=",null]]}'>
     <field name="move_number"/>
     <field name="move_date"/>
     <field name="description"/>
@@ -7,5 +7,6 @@
     <field name="credit"/>
     <field name="track_id"/>
     <field name="amount_cur"/>
+    <field name="reconcile_id"/>
     <field name="is_account_reconciled" invisible="1"/>
 </list>

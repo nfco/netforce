@@ -3,6 +3,6 @@
     <field name="view_cls">report_view</field>
     <field name="model">task</field>
     <field name="condition">[["state","=","in_progress"]]</field>
-    <field name="group_select">employee_id,project_id,job_id,state</field>
+    <field name="group_select">resource_id,project_id,job_id,state</field>
     <field name="menu">service_menu</field>
 </action>

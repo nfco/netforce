@@ -321,6 +321,11 @@ class SaleQuot(Model):
         contact = get_model("contact").browse(contact_id)
         data["payment_terms"] = contact.payment_terms
         data["price_list_id"] = contact.sale_price_list_id.id
+        if contact.currency_id:
+            data["currency_id"] = contact.currency_id.id
+        else:
+            settings = get_model("settings").browse(1)
+            data["currency_id"] = settings.currency_id.id
         return data
 
     def onchange_uom(self, context):

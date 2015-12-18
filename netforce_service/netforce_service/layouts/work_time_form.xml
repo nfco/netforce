@@ -11,12 +11,16 @@
     <separator/>
     <field name="actual_hours"/>
     <field name="bill_hours"/>
+    <separator string="Costing"/>
+    <field name="track_id"/>
+    <field name="cost_amount"/>
     <foot>
         <button string="Approve" type="success" method="approve" states="waiting_approval" icon="ok" perm="approve_timesheet"/>
         <button string="Reject" type="danger" method="reject" states="waiting_approval" icon="remove" perm="approve_timesheet"/>
         <button string="Waiting Approval" icon="arrow-left" method="waiting_approval" states="approved,rejected"/>
     </foot>
     <related>
+        <field name="track_entries"/>
         <field name="comments"/>
     </related>
 </form>

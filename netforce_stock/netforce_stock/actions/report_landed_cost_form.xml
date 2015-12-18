@@ -1,0 +1,11 @@
+<action>
+    <field name="view_cls">form_popup</field>
+    <field name="string">Print Landed Cost</field>
+    <field name="model">print.wizard</field>
+    <field name="print_model">landed.cost</field>
+    <field name="template">landed_cost</field>
+    <field name="template_format">odt2</field>
+    <field name="custom_template_type">landed_cost</field>
+    <field name="target">_popup</field>
+</action>
+

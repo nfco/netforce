@@ -31,6 +31,9 @@
             <th style="text-align:right">
                 Credit
             </th>
+            <th style="text-align:right">
+                Currency Amount
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -56,6 +59,9 @@
                 <td style="text-align:right">
                     {{currency credit zero=""}}
                 </td>
+                <td style="text-align:right">
+                    {{currency amount_cur zero=""}}
+                </td>
             </tr>
         {{/each}}
     </tbody>
@@ -76,6 +82,9 @@
             <td style="text-align:right">
                 {{currency totals.credit}}
             </td>
+            <td style="text-align:right">
+                {{currency totals.amount_cur}}
+            </td>
         </tr>
         <tr style="font-weight:bold">
             <td>
@@ -93,6 +102,8 @@
             </td>
             <td style="text-align:right">
                 {{currency balance_credit}}
+            </td>
+            <td>
             </td>
         </tr>
     </tfoot>

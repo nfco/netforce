@@ -3,7 +3,7 @@
     <field name="view_cls">report_view</field>
     <field name="model">job</field>
     <field name="condition">[["state","=","done"]]</field>
-    <field name="group_select">year,quarter,month,week,contact_id,service_type_id,project_id,contract_id</field>
+    <field name="group_select">year,quarter,month,week,contact_id,service_type_id,project_id</field>
     <field name="view_xml">report_job_list</field>
     <field name="sum_fields">total_cost,amount_total</field>
     <field name="menu">service_menu</field>

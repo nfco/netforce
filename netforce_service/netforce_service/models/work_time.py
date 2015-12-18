@@ -48,6 +48,9 @@ class WorkTime(Model):
         "state": fields.Selection([["waiting_approval", "Waiting Approval"], ["approved", "Approved"], ["rejected", "Rejected"]], "Status", required=True),
         "agg_actual_hours_total": fields.Decimal("Actual Hours Total", agg_function=["sum", "actual_hours"]),
         "agg_bill_hours_total": fields.Decimal("Billable Hours Total", agg_function=["sum", "bill_hours"]),
+        "track_entries": fields.One2Many("account.track.entry","related_id","Tracking Entries"),
+        "track_id": fields.Many2One("account.track.categ","Tracking",function="get_track_categ"),
+        "cost_amount": fields.Decimal("Cost Amount",function="get_cost_amount"),
     }
     _order = "date,resource_id.name"
 
@@ -115,5 +118,23 @@ class WorkTime(Model):
         prod = get_model("product").browse(prod_id)
         data["unit_price"] = prod.cost_price
         return data
+
+    def get_track_categ(self,ids,context={}):
+        vals={}
+        for obj in self.browse(ids):
+            track_id=obj.project_id.track_id.id
+            rel=obj.related_id
+            if rel.track_id:
+                track_id=rel.track_id.id
+            vals[obj.id]=track_id
+        return vals
+
+    def get_cost_amount(self,ids,context={}):
+        vals={}
+        for obj in self.browse(ids):
+            prod=obj.resource_id.product_id
+            amt=(prod.cost_price or 0)*(obj.actual_hours or 0)
+            vals[obj.id]=amt
+        return vals
 
 WorkTime.register()

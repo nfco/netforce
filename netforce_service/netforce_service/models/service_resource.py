@@ -39,6 +39,7 @@ class Resource(Model):
         "time_sheets": fields.One2Many("time.sheet", "resource_id", "Time Sheets"),
         "user_id": fields.Many2One("base.user", "User"),
         "type": fields.Selection([["person","Person"],["machine","Machine"]],"Resource Type"),
+        "product_id": fields.Many2One("product","Product"),
     }
     _order = "name"
 
