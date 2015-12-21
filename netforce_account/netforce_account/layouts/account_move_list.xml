@@ -1,4 +1,4 @@
-<list model="account.move">
+<list model="account.move" show_company="1" colors='{"difference,#f00":[["difference","!=",0]]}'>
     <head>
         <button string="Print PDF" icon="print" action="report_journal_entry" action_options="convert=pdf"/>
     </head>
@@ -11,5 +11,6 @@
     <field name="narration"/>
     <field name="total_debit"/>
     <field name="total_credit"/>
+    <field name="difference"/>
     <field name="state"/>
 </list>

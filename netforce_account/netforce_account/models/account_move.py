@@ -48,6 +48,7 @@ class Move(Model):
         "related_id": fields.Reference([["account.invoice", "Invoice"], ["account.payment", "Payment"], ["account.transfer", "Transfer"], ["hr.expense", "Expense Claim"], ["service.contract", "Service Contract"], ["pawn.loan", "Loan"], ["landed.cost","Landed Cost"], ["stock.picking","Stock Picking"]], "Related To"),
         "company_id": fields.Many2One("company", "Company"),
         "track_entries": fields.One2Many("account.track.entry","move_id","Tracking Entries"),
+        "difference" : fields.Float("Difference",function="get_difference",function_multi=True),
     }
 
     def _get_journal(self, context={}):
@@ -82,6 +83,14 @@ class Move(Model):
         "company_id": lambda *a: get_active_company(),
     }
     _order = "date desc,id desc"
+
+    def get_difference(self, ids, context): 
+        vals = {}
+        for obj in self.browse(ids):
+            vals[obj.id] = {
+                "difference": obj.total_debit-obj.total_credit ,
+            }
+        return vals
 
     def create(self, vals, **kw):
         t0 = time.time()
@@ -262,6 +271,7 @@ class Move(Model):
                 line["credit"] = 0
             if line.get("credit") is not None and line.get("debit") is None:
                 line["debit"] = 0
+        data["difference"]= data["total_debit"]-data["total_credit"]
         return data
 
     def get_line_desc(self, context):

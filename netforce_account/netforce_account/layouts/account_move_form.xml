@@ -43,6 +43,7 @@
     <group offset="8" span="4">
         <field name="total_debit" span="12"/>
         <field name="total_credit" span="12"/>
+        <field name="difference" span="12" attrs='{"invisible": [["difference","=",0]]}'/>
     </group>
     <field name="company_id" invisible="1"/>
     <foot states='draft'>
