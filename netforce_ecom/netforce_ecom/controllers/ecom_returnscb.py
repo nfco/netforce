@@ -39,7 +39,7 @@ class ReturnSCB(Controller):
         if base_url.endswith("/"):
             base_url=base_url[:-1]
         response = self.get_argument("response")
-        if response != "approved":
+        if response == "declined":
             cart.cancel_order()
             db = database.get_connection()
             db.commit()
