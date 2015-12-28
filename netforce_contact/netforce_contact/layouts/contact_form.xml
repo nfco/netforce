@@ -27,6 +27,7 @@
                 <field name="phone"/>
                 <field name="code"/>
                 <field name="picture"/>
+                <field name="gender"/>
             </group>
             <separator string="Additional Information"/>
             <group attrs='{"invisible": [["type","!=","org"]]}'>
