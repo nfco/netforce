@@ -2080,7 +2080,7 @@ class Model(object):
                 vals = {}
                 for n, v in rec.items():
                     f = self._fields[n]
-                    if isinstance(f, (fields.Char, fields.Text, fields.Float, fields.Integer, fields.Date, fields.DateTime, fields.Selection, fields.Boolean)):
+                    if isinstance(f, (fields.Char, fields.Text, fields.Float, fields.Decimal, fields.Integer, fields.Date, fields.DateTime, fields.Selection, fields.Boolean)):
                         vals[n] = v
                     elif isinstance(f, fields.Many2One):
                         if v:
