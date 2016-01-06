@@ -67,7 +67,7 @@ class ReportXLS(Controller):
             sheet = book.add_worksheet()
             col = 0
             for n in group_fields:
-                f = m._fields[n]
+                f = self._get_field(model=m, field_name=n)
                 sheet.write(0, col, f.string, fmt_header)
                 sheet.set_column(col, col, 20)
                 col += 1
@@ -85,7 +85,7 @@ class ReportXLS(Controller):
                 col = 0
                 for n in group_fields:
                     v = line[n]
-                    f = m._fields[n]
+                    f = self._get_field(model=m, field_name=n)
                     if isinstance(f, fields.Many2One):
                         v = v[1] if v else None
                     sheet.write(row, col, v)
@@ -105,5 +105,17 @@ class ReportXLS(Controller):
             self.write(out.getvalue())
         finally:
             db.commit()
+
+    def _get_field(self, model, field_name):
+        if not field_name or not model:
+            return None
+        if isinstance(model, str):
+            model = get_model(model)
+        path = field_name.split(".", 1)
+        if len(path) == 1:
+            return model._fields[field_name]
+        else:
+            sub_model = model._fields[path[0]].relation
+            return self._get_field(sub_model, path[1])
 
 ReportXLS.register()

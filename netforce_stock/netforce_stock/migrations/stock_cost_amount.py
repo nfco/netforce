@@ -7,7 +7,8 @@ class Migration(migration.Migration):
     _version="3.1.0"
 
     def migrate(self):
-        for move in get_model("stock.move").search([["cost_amount","=",None]]):
+        for move in get_model("stock.move").search_browse([["cost_amount","=",None]]):
+
             cost_price=move.unit_price or 0
             cost_amount=(move.qty or 0)*cost_price
             move.write({"cost_price": cost_price, "cost_amount": cost_amount})

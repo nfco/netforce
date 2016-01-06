@@ -37,11 +37,13 @@ class InvoiceLine(Model):
         "amount": fields.Decimal("Amount", required=True),
         "invoice_date": fields.Date("Invoice Date", function="_get_related", function_context={"path": "invoice_id.date"}),
         "invoice_contact_id": fields.Many2One("contact", "Invoice Partner", function="_get_related", function_context={"path": "invoice_id.contact_id"}),
-        "sale_id": fields.Many2One("sale.order", "Sale Order"),
         "purch_id": fields.Many2One("purchase.order", "Purchase Order"),
         "track_id": fields.Many2One("account.track.categ", "Track-1", condition=[["type", "=", "1"]]),
         "track2_id": fields.Many2One("account.track.categ", "Track-2", condition=[["type", "=", "2"]]),
         "amount_discount": fields.Decimal("Discount", function="get_discount"),
+        "related_id": fields.Reference([["sale.order", "Sales Order"], ["purchase.order", "Purchase Order"], ["production.order","Production Order"], ["project", "Project"], ["job", "Service Order"], ["service.contract", "Service Contract"]], "Related To"),
+        "sale_id": fields.Many2One("sale.order", "Sale Order"),
+        "purchase_id": fields.Many2One("purchase.order","Purchase Order"),
     }
 
     def create(self, vals, **kw):

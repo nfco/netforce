@@ -30,8 +30,8 @@ class ReportTaxAudit(Model):
     _transient = True
     _fields = {
         "tax_comp_id": fields.Many2One("account.tax.component", "Tax Component"),
-        "tax_type": fields.Selection([["vat", "VAT"], ["vat_exempt", "VAT Exempt"], ["vat_defer", "Deferred VAT"], ["wht", "Withholding Tax"], ["specific_business", "Specific Business Tax"]], "Tax Type"),
-        "trans_type": fields.Selection([["out", "Sale"], ["in", "Purchase"]], "Transaction Type"),
+        "tax_type": fields.Selection([["vat", "VAT"], ["vat_exempt", "VAT Exempt"], ["vat_defer", "Deferred VAT"], ["wht", "Withholding Tax"], ["specific_business", "Specific Business Tax"]], "Tax Type", required=True),
+        "trans_type": fields.Selection([["out", "Sale"], ["in", "Purchase"]], "Transaction Type", required=True),
         "date_from": fields.Date("From",required=True),
         "date_to": fields.Date("To",required=True),
     }
@@ -63,6 +63,7 @@ class ReportTaxAudit(Model):
             params = self.default_get(load_m2o=False, context=context)
         settings = get_model("settings").browse(1)
         tax_comp_id = params.get("tax_comp_id")
+        trans_type=params.get("trans_type")
         if tax_comp_id:
             tax_comp_id=int(tax_comp_id)
             tax_comp = get_model("account.tax.component").browse(tax_comp_id)
@@ -70,9 +71,9 @@ class ReportTaxAudit(Model):
             tax_type=tax_comp.tax_type
         else:
             tax_type=params.get("tax_type")
-            if not tax_type:
-                raise Exception("Missing tax type")
-            tax_comp_ids=get_model("account.tax.component").search([["type","=",tax_type]])
+            if not tax_type or not trans_type:
+                return
+            tax_comp_ids=get_model("account.tax.component").search([["type","=",tax_type],["trans_type", "=", trans_type]])
             tax_comp=None
         date_from = params.get("date_from")
         if not date_from:
@@ -89,8 +90,8 @@ class ReportTaxAudit(Model):
             "date_to": date_to,
         }
         db = database.get_connection()
-        res = db.query("SELECT m.id AS move_id,m.date,a.name AS account_name,a.code AS account_code,m.number,m.ref,l.description,l.credit-l.debit AS tax_amount,l.tax_base*sign(l.credit-l.debit) AS base_amount,c.name as contact_name,c.id as contact_id FROM account_move_line l JOIN account_move m ON m.id=l.move_id JOIN account_account a ON a.id=l.account_id LEFT JOIN contact c ON c.id=l.contact_id WHERE m.state='posted' AND m.date>=%s AND m.date<=%s AND l.tax_comp_id IN %s AND m.company_id IN %s ORDER BY date",
-                       date_from, date_to, tuple(tax_comp_ids), tuple(company_ids))
+        res = db.query("SELECT m.id AS move_id,m.date,a.name AS account_name,a.code AS account_code,m.number,m.ref,l.description,case when 'in' = %s then l.debit-l.credit else l.credit-l.debit end AS tax_amount, case when 'in' = %s then l.tax_base*sign(l.debit-l.credit) else l.tax_base*sign(l.credit-l.debit) end AS base_amount,c.name as contact_name,c.id as contact_id FROM account_move_line l JOIN account_move m ON m.id=l.move_id JOIN account_account a ON a.id=l.account_id LEFT JOIN contact c ON c.id=l.contact_id WHERE m.state='posted' AND m.date>=%s AND m.date<=%s AND l.tax_comp_id IN %s AND m.company_id IN %s ORDER BY date",
+            trans_type, trans_type, date_from, date_to, tuple(tax_comp_ids), tuple(company_ids))
         data["lines"] = [dict(r) for r in res]
         data["base_total"]=sum(l["base_amount"] for l in data["lines"])
         data["tax_total"]=sum(l["tax_amount"] for l in data["lines"])

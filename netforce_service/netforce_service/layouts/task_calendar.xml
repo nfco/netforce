@@ -1,0 +1,8 @@
+<calendar model="task" start_field="date_start" end_field="date_end">
+    <field name="number"/>
+    <field name="title"/>
+    <field name="resource_id"/>
+    <field name="duration"/>
+    <field name="description"/>
+    <field name="state"/>
+</calendar>

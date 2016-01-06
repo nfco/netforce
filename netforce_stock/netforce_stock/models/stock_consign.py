@@ -43,7 +43,9 @@ class StockConsign(Model):
         "type": fields.Selection([["sale","Sell"],["purchase","Purchase"]],"Consignment Type",required=True,search=True),
         "company_id": fields.Many2One("company","Company",search=True),
         "periods": fields.One2Many("stock.consign.period","consign_id","Consignment Periods"),
-        "order_type": fields.Selection([["stock","From Stock"],["sale","From Sales"]],"Create Order"),
+        "order_type": fields.Selection([["stock","From Stock"],["sale","From Sales Orders"],["invoice","From Customer Invoices"]],"Create Order"),
+        "new_invoice_lines": fields.Many2Many("account.invoice.line","New Invoice Lines",function="get_new_invoice_lines"),
+        "purchase_orders": fields.One2Many("purchase.order","related_id","Purchase Orders"),
     }
     _defaults = {
         "company_id": lambda *a: access.get_active_company(),
@@ -54,10 +56,13 @@ class StockConsign(Model):
         for obj in self.browse(ids):
             if obj.type!="purchase":
                 raise Exception("Wrong consignment type")
-            for period in obj.periods:
-                if period.purchase_id:
-                    continue
-                period.create_purchase()
+            if obj.order_type in ("stock","sale"): # XXX
+                for period in obj.periods:
+                    if period.purchase_id:
+                        continue
+                    period.create_purchase()
+            elif obj.order_type=="invoice":
+                obj.create_purchase_from_invoice()
 
     def create_sale(self,ids,context={}):
         for obj in self.browse(ids):
@@ -97,5 +102,58 @@ class StockConsign(Model):
                 print("create consign period",obj.id,date_from_s,date_to_s)
                 get_model("stock.consign.period").create(vals)
                 date_from = date_to + timedelta(days=1)
+
+    def get_new_invoice_lines(self,ids,context={}): 
+        vals={}
+        for obj in self.browse(ids):
+            res=get_model("company").search([["contact_id","=",obj.contact_id.id]])
+            if res:
+                sup_company_id=res[0]
+                inv_line_ids=get_model("account.invoice.line").search([["product_id.company_id","child_of",sup_company_id],["purchase_id","=",None],["invoice_id.state","=","paid"]])
+            else:
+                inv_line_ids=[]
+            vals[obj.id]=inv_line_ids
+        return vals
+
+    def create_purchase_from_invoice(self,ids,context={}):
+        obj=self.browse(ids[0])
+        day_inv_lines={}
+        for inv_line in obj.new_invoice_lines:
+            inv=inv_line.invoice_id
+            day_inv_lines.setdefault(inv.date,[]).append(inv_line.id)
+        for d,inv_line_ids in day_inv_lines.items():
+            purch_vals={
+                "date": d,
+                "company_id": obj.company_id.id,
+                "contact_id": obj.contact_id.id,
+                "tax_type": "tax_ex",
+                "lines": [],
+                "related_id": "stock.consign,%d"%obj.id,
+            }
+            prods={}
+            for inv_line in get_model("account.invoice.line").browse(inv_line_ids):
+                prod=inv_line.product_id
+                prods.setdefault(prod.id,{
+                    "qty": 0,
+                    "amt": 0,
+                })
+                qty=inv_line.qty or 0
+                amt=(prod.purchase_price or 0)*qty
+                prods[prod.id]["qty"]+=qty
+                prods[prod.id]["amt"]+=amt
+            for prod_id,prod_vals in prods.items():
+                qty=prod_vals["qty"]
+                amt=prod_vals["amt"]
+                price=amt/qty if qty else 0
+                line_vals={
+                    "product_id": prod.id,
+                    "description": prod.description or "/",
+                    "qty": qty,
+                    "uom_id": prod.uom_id.id,
+                    "unit_price": price,
+                }
+                purch_vals["lines"].append(("create",line_vals))
+            purch_id=get_model("purchase.order").create(purch_vals)
+            get_model("account.invoice.line").write(inv_line_ids,{"purchase_id":purch_id})
 
 StockConsign.register()

@@ -53,8 +53,8 @@ class SaleOrder(Model):
         "quot_id": fields.Many2One("sale.quot", "Quotation", search=True), # XXX: deprecated
         "user_id": fields.Many2One("base.user", "Owner", search=True),
         "tax_type": fields.Selection([["tax_ex", "Tax Exclusive"], ["tax_in", "Tax Inclusive"], ["no_tax", "No Tax"]], "Tax Type", required=True),
-        "invoice_lines": fields.One2Many("account.invoice.line", "sale_id", "Invoice Lines"),
-        "invoices": fields.One2Many("account.invoice", "related_id", "Invoices"),
+        "invoice_lines": fields.One2Many("account.invoice.line", "related_id", "Invoice Lines"),
+        "invoices": fields.Many2Many("account.invoice", "Invoices", function="get_invoices"),
         "pickings": fields.Many2Many("stock.picking", "Stock Pickings", function="get_pickings"),
         "is_delivered": fields.Boolean("Delivered", function="get_delivered"),
         "is_paid": fields.Boolean("Paid", function="get_paid"),
@@ -624,11 +624,12 @@ class SaleOrder(Model):
         vals = {}
         for obj in self.browse(ids):
             amt_paid = 0
-            for inv in obj.invoices:
+            for inv_line in obj.invoice_lines:
+                inv=inv_line.invoice_id
                 if inv.state != "paid":
                     continue
-                amt_paid += inv.amount_total
-            is_paid = amt_paid >= obj.amount_total
+                amt_paid += inv_line.amount
+            is_paid = amt_paid >= obj.amount_subtotal # XXX: check this for tax-in
             vals[obj.id] = is_paid
         return vals
 
@@ -1231,5 +1232,45 @@ class SaleOrder(Model):
             rate_to=obj.currency_id.get_rate(obj.date) or Decimal(1)
             rate=rate_from/rate_to
         return rate
+
+    def copy_to_sale_return(self,ids,context={}):
+        for obj in self.browse(ids):
+            order_vals = {}
+            order_vals = {
+                "contact_id":obj.contact_id.id,
+                "date":obj.date,
+                "ref":obj.number,
+                "due_date":obj.due_date,
+                "currency_id":obj.currency_id.id,
+                "tax_type":obj.tax_type,
+                "bill_address_id":obj.bill_address_id.id,
+                "ship_address_id":obj.ship_address_id.id,
+                "lines":[],
+            }
+            for line in obj.lines:
+                line_vals = {
+                    "product_id":line.product_id.id,
+                    "description":line.description,
+                    "qty":line.qty,
+                    "uom_id":line.uom_id.id,
+                    "unit_price":line.unit_price,
+                    "discount":line.discount,
+                    "discount_amount":line.discount_amount,
+                    "tax_id":line.tax_id.id,
+                    "amount":line.amount,
+                    "location_id":line.location_id.id,
+                }
+                order_vals["lines"].append(("create", line_vals))
+            sale_id = get_model("sale.return").create(order_vals)
+            sale = get_model("sale.return").browse(sale_id)
+        return {
+            "next": {
+                "name": "sale_return",
+                "mode": "form",
+                "active_id": sale_id,
+            },
+            "flash": "Sale Return %s created from sales order %s" % (sale.number, obj.number),
+            "order_id": sale_id,
+        }
 
 SaleOrder.register()

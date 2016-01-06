@@ -92,8 +92,10 @@ class Cart(Model):
             })
         return {ids[0]: res}
 
-    def copy_to_sale(self,ids,context={}):
+    def confirm(self,ids,context={}):
         obj=self.browse(ids)[0]
+        if obj.state=="confirmed":
+            raise Exception("Order is already confirmed")
         access.set_active_company(1) # XXX
         order_lines={}
         for line in obj.lines:
@@ -122,6 +124,53 @@ class Cart(Model):
             sale_id=get_model("sale.order").create(vals)
             sale=get_model("sale.order").browse(sale_id)
         obj.write({"state": "confirmed"})
+        return {
+            "order_id": sale.id,
+            "order_num": sale.number,
+        }
 
+    def to_draft(self,ids,context={}):
+        obj=self.browse(ids[0])
+        obj.write({"state":"draft"})
+
+    def set_qty(self,ids,prod_id,qty,context={}):
+        print("Cart.set_qty",ids,prod_id,qty)
+        obj=self.browse(ids[0])
+        line_id=None
+        for line in obj.lines:
+            if line.product_id.id==prod_id:
+                line_id=line.id
+                break
+        if line_id:
+            if qty==0:
+                get_model("ecom2.cart.line").delete([line_id])
+            else:
+                get_model("ecom2.cart.line").write([line_id],{"qty":qty})
+        else:
+            if qty!=0:
+                get_model("ecom2.cart.line").create({"cart_id": obj.id, "product_id": prod_id, "qty": qty})
+
+    def add_lot(self,ids,prod_id,lot_id,context={}):
+        print("Cart.add_lot",ids,prod_id,lot_id)
+        obj=self.browse(ids[0])
+        line_id=None
+        for line in obj.lines:
+            if line.product_id.id==prod_id and line.lot_id.id==lot_id:
+                line_id=line.id
+                break
+        if line_id:
+            raise Exception("Lot already added to cart")
+        get_model("ecom2.cart.line").create({"cart_id": obj.id, "product_id": prod_id, "lot_id": lot_id, "qty": 1})
+
+    def remove_lot(self,ids,prod_id,lot_id,context={}):
+        obj=self.browse(ids[0])
+        line_id=None
+        for line in obj.lines:
+            if line.product_id.id==prod_id and line.lot_id.id==lot_id:
+                line_id=line.id
+                break
+        if not line_id:
+            raise Exception("Lot not found in cart")
+        get_model("ecom2.cart.line").delete([line_id])
 
 Cart.register()

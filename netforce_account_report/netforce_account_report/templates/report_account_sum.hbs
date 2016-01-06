@@ -17,7 +17,10 @@
                 Month
             </th>
             <th style="text-align:right">
-                Balance
+                Balance {{company_currency_code}} (Company Cur.)
+            </th>
+            <th style="text-align:right">
+                Balance {{account_currency_code}} (Account Cur.)
             </th>
         </tr>
     </thead>
@@ -32,6 +35,11 @@
                         {{currency balance}}
                     </a>
                 </td>
+                <td style="text-align:right">
+                    <a href="/ui#name=report_account_trans&defaults.account_id={{account_id}}&defaults.date_from={{date_from}}&defaults.date_to={{date_to}}&defaults.contact_id={{../contact_id}}&defaults.track_id={{../track_id}}&defaults.track2_id={{../track2_id}}">
+                        {{currency balance_cur}}
+                    </a>
+                </td>
             </tr>
         {{/each}}
     </tbody>
@@ -42,6 +50,9 @@
             </td>
             <td style="text-align:right">
                 {{currency total}}
+            </td>
+            <td style="text-align:right">
+                {{currency total_cur}}
             </td>
         </tr>
     </tfoot>

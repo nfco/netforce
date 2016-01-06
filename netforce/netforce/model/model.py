@@ -1227,17 +1227,31 @@ class Model(object):
         path = context.get("path")
         if not path:
             raise Exception("Missing path")
-        fields = path.split(".")
+        fnames = path.split(".")
         vals = {}
-        # i=0
         for obj in self.browse(ids):
-            # print("XXX",i)
-            # i+=1
-            val = obj
-            for field in fields:
-                val = val[field]
-            if isinstance(val, BrowseRecord):
-                val = val.id
+            parent = obj
+            parent_m=get_model(obj._model)
+            for n in fnames[:-1]:
+                f=parent_m._fields[n]
+                if not isinstance(f,(fields.Many2One,fields.Reference)):
+                    raise Exception("Invalid field path for model %s: %s"%(self._name,path))
+                parent = parent[n]
+                if not parent:
+                    parent=None
+                    break
+                parent_m=get_model(parent._model)
+            if not parent:
+                val=None
+            else:
+                n=fnames[-1]
+                val=parent[n]
+                if n!="id":
+                    f=parent_m._fields[n]
+                    if isinstance(f,(fields.Many2One,fields.Reference)):
+                        val = val.id
+                    elif isinstance(f,(fields.One2Many,fields.Many2Many)):
+                        val=[v.id for v in val]
             vals[obj.id] = val
         return vals
 

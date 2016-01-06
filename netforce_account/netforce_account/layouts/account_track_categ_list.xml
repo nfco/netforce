@@ -3,4 +3,5 @@
     <field name="code"/>
     <field name="type"/>
     <field name="balance"/>
+    <field name="currency_id"/>
 </list>

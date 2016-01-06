@@ -24,32 +24,46 @@ from datetime import *
 import time
 from netforce import access
 
+def is_holiday(d):
+    w=d.weekday()
+    if w==5 or w==6:
+        return True
+    res=get_model("hr.holiday").search([["date","=",d.strftime("%Y-%m-%d")]])
+    if res:
+        return True
+    return False
 
 class Task(Model):
     _name = "task"
     _string = "Task"
+    _name_field = "title"
     _fields = {
         "number": fields.Char("Number",required=True,search=True),
+        "sequence": fields.Integer("Sequence"),
         "date_created": fields.DateTime("Date Created",required=True,search=True),
-        "date_closed": fields.DateTime("Date Closed"),
-        "date_estimate": fields.DateTime("Estimated Close Date"),
         "project_id": fields.Many2One("project","Project",required=True,search=True),
+        "milestone_id": fields.Many2One("project.milestone","Milestone",search=True),
+        "task_list_id": fields.Many2One("task.list","Task List",search=True),
         "job_id": fields.Many2One("job","Service Order",search=True),
         "contact_id": fields.Many2One("contact","Customer",function="_get_related",function_context={"path":"project_id.contact_id"}),
         "title": fields.Char("Title",required=True,search=True),
         "description": fields.Text("Description",search=True),
-        "priority": fields.Decimal("Priority",required=True),
-        "emails": fields.One2Many("email.message", "related_id", "Emails"),
-        "state": fields.Selection([["new","New"],["ready","Ready To Start"],["in_progress","In Progress"],["closed","Closed"],["wait_customer","Wait For Customer"],["wait_internal","Internal Wait"]],"Status",required=True,search=True),
-        "planned_hours": fields.Decimal("Planned Hours"),
-        "days_open": fields.Integer("Days Open",function="get_days_open"),
+        "progress": fields.Integer("Progress (%)"),
+        "date_start": fields.Date("Start Date",required=True),
+        "date_end": fields.Date("End Date",required=True,readonly=True,function="get_end_date",store=True),
+        "duration": fields.Integer("Duration (Days)",required=True),
+        "due_date": fields.Date("Due Date"),
+        "done_date": fields.Date("Completion Date"),
         "resource_id": fields.Many2One("service.resource","Assigned To"),
         "documents": fields.One2Many("document", "related_id", "Documents"),
         "emails": fields.One2Many("email.message", "related_id", "Emails"),
         "comments": fields.Text("Comments"),
         "messages": fields.One2Many("message", "related_id", "Messages"),
-        "date_started": fields.DateTime("Date Started"),
-        "date_est_start": fields.DateTime("Estimated Start Date"),
+        "emails": fields.One2Many("email.message", "related_id", "Emails"),
+        "state": fields.Selection([["open","Open"],["closed","Closed"]],"Status",required=True,search=True),
+        "depends": fields.One2Many("task.depend","task_id","Task Dependencies"),
+        "related_id": fields.Reference([["job","Job"]],"Related To"),
+        "depends_json": fields.Text("Task Dependencies (String)",function="get_depends_json"),
     }
     _order = "priority,id"
 
@@ -73,15 +87,46 @@ class Task(Model):
         "number": _get_number,
     }
 
-    def get_days_open(self,ids,context={}):
+    def get_depends_json(self,ids,context={}):
         vals={}
-        today=date.today()
         for obj in self.browse(ids):
-            if obj.state=="closed":
-                vals[obj.id]=None
-                continue
-            d=datetime.strptime(obj.date_created,"%Y-%m-%d %H:%M:%S").date()
-            vals[obj.id]=(today-d).days
+            res=[]
+            for dep in obj.depends:
+                res.append((dep.prev_task_id.id,dep.delay))
+            vals[obj.id]=res
         return vals
+
+    def calc_end_date(self,date_start,duration):
+        d=datetime.strptime(date_start,"%Y-%m-%d")
+        dur=0
+        while True:
+            if not is_holiday(d):
+                dur+=1
+            if dur>=duration:
+                break
+            d+=timedelta(days=1)
+        return d.strftime("%Y-%m-%d")
+
+    def update_end(self,context={}):
+        data=context.get("data",{})
+        date_start=data["date_start"]
+        duration=data.get("duration",0)
+        data["date_end"]=self.calc_end_date(date_start,duration)
+        return data
+
+    def get_end_date(self,ids,context={}):
+        vals={}
+        for obj in self.browse(ids):
+            vals[obj.id]=self.calc_end_date(obj.date_start,obj.duration)
+        return vals
+
+    def create(self,vals,*args,**kw):
+        new_id=super().create(vals,*args,**kw)
+        self.function_store([new_id])
+        return new_id
+
+    def write(self,ids,*args,**kw):
+        super().write(ids,*args,**kw)
+        self.function_store(ids)
 
 Task.register()

@@ -5,6 +5,7 @@
     <field name="code"/>
     <field name="description" width="400" height="100"/>
     <field name="balance"/>
+    <field name="currency_id"/>
     <related>
         <field name="sub_tracks"/>
         <field name="track_entries"/>

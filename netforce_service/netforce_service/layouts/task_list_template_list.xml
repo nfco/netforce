@@ -1,0 +1,3 @@
+<list model="task.list.template">
+    <field name="name"/>
+</list>

@@ -7,6 +7,7 @@
             <item string="Select Template" action="print_select_template" action_options="report_action=report_borrow_form&amp;template_type=borrow_form"/>
         </button>
         <button string="Options" dropdown="1" align="right">
+            <item string="Copy To Goods Receipt" method="copy_to_pick_in" states="approved"/>
             <item string="Copy To Goods Issue" method="copy_to_picking" states="approved"/>
             <item string="Void" method="void" confirm="Are you sure you want to void this claim?"/>
         </button>

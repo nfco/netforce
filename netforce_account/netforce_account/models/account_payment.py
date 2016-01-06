@@ -848,6 +848,7 @@ class Payment(Model):
         obj = self.browse(ids)[0]
         if obj.pay_type == "prepay":
             vals = {
+                "number": obj.number,
                 "type": obj.type == "in" and "out" or "in",
                 "inv_type": "prepay",
                 "contact_id": obj.contact_id.id,

@@ -2,9 +2,10 @@
     <field name="track_id"/>
     <field name="date"/>
     <field name="related_id"/>
-    <field name="product_id"/>
+    <field name="product_id" onchange="onchange_product"/>
     <field name="description"/>
-    <field name="qty"/>
+    <field name="unit_price" onchange="update_amount"/>
+    <field name="qty" onchange="update_amount"/>
     <field name="uom_id"/>
     <field name="amount"/>
     <field name="move_id"/>

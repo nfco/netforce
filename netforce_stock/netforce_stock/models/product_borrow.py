@@ -167,4 +167,48 @@ class Borrow(Model):
             "picking_id": pick_id,
         }
 
+    def copy_to_pick_in(self, ids, context={}):
+        obj=self.browse(ids)[0]
+        settings = get_model("settings").browse(1)
+        if not settings.product_borrow_journal_id:
+            raise Exception("Missing borrow request journal in Inventory Setting")
+        if not settings.product_borrow_journal_id.location_from_id:
+            raise Exception("Missing 'Location From' for journal '%s'"%settings.product_borrow_journal_id.name)
+        if not settings.product_borrow_journal_id.location_to_id:
+            raise Exception("Missing 'Location To' for journal '%s'"%settings.product_borrow_journal_id.name)
+        user_id=get_active_user()
+        user=get_model("base.user").browse(user_id)
+        pick_vals = {
+            "type": "in",
+            "ref": obj.number,
+            "journal_id": settings.product_borrow_journal_id.id,
+            "related_id": "product.borrow,%s" % obj.id,
+            "contact_id": user.contact_id.id,
+            "lines": [],
+            "state": "draft",
+            "company_id": get_active_company(),
+        }
+        for line in obj.lines:
+            line_vals = {
+                "product_id": line.product_id.id,
+                "qty": line.qty,
+                "uom_id": line.uom_id.id,
+                "location_from_id": settings.product_borrow_journal_id.location_to_id.id,
+                "location_to_id": settings.product_borrow_journal_id.location_from_id.id,
+                "lot_id": line.lot_id.id,
+                "related_id": "product.borrow,%s" % obj.id,
+            }
+            pick_vals["lines"].append(("create", line_vals))
+        pick_id = get_model("stock.picking").create(pick_vals, context=pick_vals)
+        pick = get_model("stock.picking").browse(pick_id)
+        return {
+            "next": {
+                "name": "pick_in",
+                "mode": "form",
+                "active_id": pick_id,
+            },
+            "flash": "Picking %s created from borrow request %s" % (pick.number, obj.number),
+            "picking_id": pick_id,
+        }
+
 Borrow.register()

@@ -334,6 +334,9 @@ class Invoice(Model):
         t0 = time.time()
         settings = get_model("settings").browse(1)
         for obj in self.browse(ids):
+            if obj.related_id:
+                for line in obj.lines:
+                    line.write({"related_id":"%s,%d"%(obj.related_id._model,obj.related_id.id)})
             obj.check_related()
             if obj.amount_total == 0:
                 raise Exception("Invoice total is zero")
@@ -1026,7 +1029,7 @@ class Invoice(Model):
             "is_cash": is_cash,
             "is_cheque": is_cheque,
             "currency_code": inv.currency_id.code,
-            "tax_rate": get_model("currency").round(inv.currency_id.id,inv.amount_tax * 100 / inv.amount_subtotal, 2) if inv.amount_subtotal else 0,
+            "tax_rate": get_model("currency").round(inv.currency_id.id,inv.amount_tax * 100 / inv.amount_subtotal) if inv.amount_subtotal else 0,
             "qty_total": inv.qty_total,
             "memo": inv.memo,
         })

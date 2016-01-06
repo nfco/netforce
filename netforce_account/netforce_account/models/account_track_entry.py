@@ -34,6 +34,7 @@ class TrackEntry(Model):
         "description": fields.Text("Description"),
         "qty": fields.Decimal("Qty"),
         "uom_id": fields.Many2One("uom","UoM"),
+        "unit_price": fields.Decimal("Unit Price"),
         "related_id": fields.Reference([["account.invoice","Invoice"],["stock.picking","Stock Picking"],["work.time","Work Time"],["hr.expense","Expense Claim"]],"Related To"),
         "move_id": fields.Many2One("account.move","Journal Entry"),
     }
@@ -41,5 +42,24 @@ class TrackEntry(Model):
     _defaults={
         "date": lambda *a: time.strftime("%Y-%m-%d"),
     }
+
+    def onchange_product(self,context={}):
+        data=context.get("data",{})
+        prod_id=data["product_id"]
+        if not prod_id:
+            return
+        prod=get_model("product").browse(prod_id)
+        data["unit_price"]=-prod.cost_price
+        data["qty"]=1
+        data["uom_id"]=prod.uom_id.id
+        data["amount"]=data["unit_price"]
+        return data
+
+    def update_amount(self,context={}):
+        data=context.get("data",{})
+        unit_price=data.get("unit_price",0)
+        qty=data.get("qty",0)
+        data["amount"]=unit_price*qty
+        return data
 
 TrackEntry.register()

@@ -21,31 +21,19 @@
             <separator string="Estimate Costs"/>
             <field name="est_track_id"/>
             <field name="est_track_balance"/>
-            <field name="est_track_entries" nolabel="1">
+            <field name="est_sub_tracks" readonly="1">
                 <list>
-                    <field name="date"/>
-                    <field name="track_id" condition='[["id","child_of",parent.est_track_id]]'/>
-                    <field name="related_id"/>
-                    <field name="product_id"/>
-                    <field name="description"/>
-                    <field name="qty"/>
-                    <field name="uom_id"/>
-                    <field name="amount"/>
+                    <field name="self_id"/>
+                    <field name="balance"/>
                 </list>
             </field>
             <separator string="Actual Costs"/>
             <field name="track_id"/>
             <field name="track_balance"/>
-            <field name="track_entries" nolabel="1">
+            <field name="sub_tracks" readonly="1">
                 <list>
-                    <field name="date"/>
-                    <field name="track_id" condition='[["id","child_of",parent.track_id]]'/>
-                    <field name="related_id"/>
-                    <field name="product_id"/>
-                    <field name="description"/>
-                    <field name="qty"/>
-                    <field name="uom_id"/>
-                    <field name="amount"/>
+                    <field name="self_id"/>
+                    <field name="balance"/>
                 </list>
             </field>
         </tab>

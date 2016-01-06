@@ -203,7 +203,10 @@ def make_js(minify=False):
             for fname in sorted(pkg_resources.resource_listdir(m, "js")):
                 if not fname.endswith("js"):
                     continue
-                res = pkg_resources.resource_string(m, "js/"+fname).decode("utf-8")
+                try:
+                    res = pkg_resources.resource_string(m, "js/"+fname).decode("utf-8")
+                except:
+                    raise Exception("Failed to load file %s"%fname)
                 data.append(res)
         if pkg_resources.resource_exists(m, "views"): # XXX: merge this with js dir?
             for fname in sorted(pkg_resources.resource_listdir(m, "views")):

@@ -28,7 +28,8 @@ class TaskTemplate(Model):
     _string = "Task Template"
     _name_field = "description"
     _fields = {
-        "job_template_id": fields.Many2One("job.template", "Job Template", required=True, on_delete="cascade"),
+        "job_template_id": fields.Many2One("job.template", "Job Template", required=True, on_delete="cascade"), # deprecated
+        "task_list_template_id": fields.Many2One("task.list.template", "Task List Template", required=True, on_delete="cascade"),
         "sequence": fields.Integer("Sequence"),
         "description": fields.Text("Description"),
         "product_id": fields.Many2One("product", "Product", condition=[["type", "=", "service"]]),

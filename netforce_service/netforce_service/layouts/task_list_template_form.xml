@@ -1,0 +1,11 @@
+<form model="task.list.template">
+    <field name="name"/>
+    <related>
+        <field name="task_templates">
+            <list>
+                <field name="sequence"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </related>
+</form>

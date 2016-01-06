@@ -31,6 +31,7 @@
                 <newline/>
                 <field name="bill_address_id" span="2" condition='[["settings_id","=",1]]'/>
                 <field name="ship_address_id" span="2" condition='[["settings_id","=",1]]'/>
+                <field name="related_id" span="2"/>
             </group>
             <field name="lines" nolabel="1">
                 <list onchange="update_amounts">

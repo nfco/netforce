@@ -1,0 +1,9 @@
+<list model="task.list">
+    <top>
+        <button string="Create Task List From Template" method="create_from_template" icon="plus-sign"/>
+    </top>
+    <field name="name"/>
+    <field name="date_created"/>
+    <field name="project_id"/>
+    <field name="milestone_id"/>
+</list>

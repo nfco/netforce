@@ -247,6 +247,7 @@ class Picking(Model):
         if data["type"] == "in":
             if prod.purchase_price is not None:
                 line["cost_price_cur"] = prod.purchase_price
+        self.update_cost_price(context=context)
         return data
 
     def copy_to_invoice(self, ids, context):

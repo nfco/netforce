@@ -1,9 +1,9 @@
 <form model="report.tax.audit">
     <group form_layout="stacked">
-        <field name="tax_comp_id" span="3"/>
-        <field name="tax_type" span="2"/>
-        <field name="trans_type" span="2"/>
         <field name="date_from" span="2"/>
         <field name="date_to" span="2"/>
+        <field name="trans_type" span="2"/>
+        <field name="tax_type" span="2"/>
+        <field name="tax_comp_id" span="3" condition='[["trans_type","=",trans_type]]'/>
     </group>
 </form>

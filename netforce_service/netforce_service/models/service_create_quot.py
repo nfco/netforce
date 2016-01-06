@@ -36,7 +36,7 @@ class CreateQuot(Model):
         obj = self.browse(ids[0])
         vals = {
             "contact_id": obj.contact_id.id,
-            "job_template_id": obj.id,
+            "job_template_id": obj.job_template_id.id,
             "lines": [],
         }
         tmpl = obj.job_template_id

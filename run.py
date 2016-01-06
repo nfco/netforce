@@ -19,6 +19,7 @@ modules=[
     "netforce_purchase",
     "netforce_mfg",
     "netforce_marketing",
+    "netforce_delivery",
     "netforce_hr",
     "netforce_document",
     "netforce_messaging",

@@ -30,11 +30,12 @@ import threading
 import traceback
 import sys
 from netforce import utils
+import os
 
 _check_times = None
 
 def run_job(dbname, job):
-    print("run_job %s '%s'"%(dbname, job["name"]))
+    print("run_job dbname=%s pid=%s job='%s'"%(dbname, os.getpid(), job["name"]))
     database.connections.clear()
     set_active_user(1)
     database.set_active_db(dbname)
@@ -88,6 +89,7 @@ def run_job(dbname, job):
 
 def start():
     global _check_times
+    print("Running jobs in process %s..."%os.getpid())
     dbname = config.get("database")
     if dbname:
         check_dbs = [dbname]
