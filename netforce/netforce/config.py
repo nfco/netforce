@@ -39,7 +39,7 @@ def load_config(filename=None):
         "db_user": "postgres",
         "db_password": "postgres",
         "super_password": "admin",
-        "web_processes": "8",
+        "web_processes": "4",
         "job_processes": "1",
     }
     if filename:

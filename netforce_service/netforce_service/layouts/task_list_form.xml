@@ -1,0 +1,9 @@
+<form model="task.list">
+    <field name="name"/>
+    <field name="date_created"/>
+    <field name="project_id"/>
+    <field name="milestone_id" condition='[["project_id","=",project_id]]'/>
+    <related>
+        <field name="tasks"/>
+    </related>
+</form>

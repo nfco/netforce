@@ -1,4 +1,4 @@
-<gantt model="service.resource.alloc" group="resource_id" start="time_start" stop="time_stop" action="job" label="job_id">
+<gantt model="service.resource.alloc" group="job_id" start="time_start" stop="time_stop" action="job" label="resource_id">
     <field name="resource_id"/>
     <field name="job_id"/>
     <field name="time_start"/>

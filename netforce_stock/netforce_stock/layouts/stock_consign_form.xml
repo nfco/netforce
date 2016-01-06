@@ -33,5 +33,7 @@
                 <field name="purchase_id"/>
             </form>
         </field>
+        <field name="purchase_orders"/>
+        <field name="new_invoice_lines"/>
     </related>
 </form>

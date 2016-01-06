@@ -4,6 +4,7 @@
     <field name="related_id"/>
     <field name="product_id"/>
     <field name="description"/>
+    <field name="unit_price"/>
     <field name="qty"/>
     <field name="uom_id"/>
     <field name="amount"/>

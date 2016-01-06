@@ -1,12 +1,17 @@
 <list model="task" colors='{"#ccc":[["state","=","closed"]],"#ccf":[["state","=","in_progress"]],"#efe":[["state","=","ready"]],"#fcc":[["state","=","wait_customer"]],"#ffc":[["state","=","wait_internal"]]}'>
     <field name="number"/>
+    <field name="sequence"/>
     <field name="date_created"/>
-    <field name="project_id"/>
-    <field name="job_id"/>
     <field name="title"/>
-    <field name="priority"/>
     <field name="resource_id"/>
+    <field name="duration"/>
+    <field name="date_start"/>
+    <field name="date_end"/>
+    <field name="due_date"/>
+    <field name="progress"/>
+    <field name="project_id"/>
+    <field name="milestone_id"/>
+    <field name="task_list_id"/>
+    <field name="related_id"/>
     <field name="state"/>
-    <field name="date_estimate"/>
-    <field name="date_est_start"/>
 </list>

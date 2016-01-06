@@ -1,4 +1,8 @@
 <search model="task">
+    <field name="project_id"/>
+    <field name="milestone_id"/>
+    <field name="task_list_id"/>
     <field name="resource_id"/>
+    <field name="date_start"/>
     <field name="state"/>
 </search>

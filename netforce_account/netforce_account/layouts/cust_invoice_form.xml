@@ -44,6 +44,7 @@
                     <field name="track_id"/>
                     <field name="track2_id"/>
                     <field name="amount" attrs='{"readonly":[["unit_price","!=",null]]}' onchange="update_amounts"/>
+                    <field name="related_id"/>
                 </list>
             </field>
             <group offset="8" span="4" columns="1">

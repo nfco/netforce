@@ -67,6 +67,12 @@ class WorkTime(Model):
         "state": "waiting_approval",
     }
 
+    def name_get(self,ids,context={}):
+        res=[]
+        for obj in self.browse(ids):
+            res.append((obj.id,"Work Time %s / %s"%(obj.resource_id.name,obj.date)))
+        return res
+
     def create(self, vals, **kw):
         new_id = super().create(vals, **kw)
         self.function_store([new_id])
@@ -101,8 +107,23 @@ class WorkTime(Model):
         return [["date", ">=", d0.strftime("%Y-%m-%d")], ["date", "<=", d1.strftime("%Y-%m-%d")]]
 
     def approve(self, ids, context={}):
+        res=get_model("uom").search([["name","=","Hour"]])
+        if not res:
+            raise Exception("Hour UoM not found")
+        hour_uom_id=res[0]
         for obj in self.browse(ids):
             obj.write({"state": "approved"})
+            if obj.track_id and obj.cost_amount:
+                vals={
+                    "track_id": obj.track_id.id,
+                    "date": obj.date,
+                    "amount": -obj.cost_amount,
+                    "product_id": obj.resource_id.product_id.id,
+                    "qty": obj.actual_hours or 0,
+                    "uom_id": hour_uom_id,
+                    "related_id": "work.time,%s"%obj.id,
+                }
+                get_model("account.track.entry").create(vals)
 
     def reject(self, ids, context={}):
         for obj in self.browse(ids):
@@ -111,6 +132,7 @@ class WorkTime(Model):
     def waiting_approval(self, ids, context={}):
         for obj in self.browse(ids):
             obj.write({"state": "waiting_approval"})
+            obj.track_entries.delete()
 
     def onchange_product(self, context={}):
         data = context["data"]
