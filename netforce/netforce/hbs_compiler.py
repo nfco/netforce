@@ -589,7 +589,7 @@ if barcode:
             return ImageWriter.calculate_size(self, *args, **kw)
 
 
-def _barcode(this, val, height=None, type="code128", add_checksum=False):
+def _barcode(this, val, height=None, type="code39", add_checksum=False):
     if not barcode:
         return ""
     if not val:
