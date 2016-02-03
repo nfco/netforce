@@ -88,9 +88,17 @@ class Picking(Model):
         return journal_id
 
     def _get_number(self, context={}):
+        settings = get_model("settings").browse(1)
         pick_type = context.get("pick_type")
         journal_id = context.get("journal_id")
         seq_id = None
+        if not journal_id:
+            if pick_type == "in":
+                journal_id = settings.pick_in_journal_id.id
+            elif pick_type == "out":
+                journal_id = settings.pick_out_journal_id.id
+            elif pick_type == "internal":
+                journal_id = settings.pick_internal_journal_id.id
         if journal_id:
             journal = get_model("stock.journal").browse(journal_id)
             seq_id = journal.sequence_id.id
