@@ -106,6 +106,7 @@ var Search=NFView.extend({
             } else if (orig_field.type=="text") search_field={type:"char",string:orig_field.string};
             else if (orig_field.type=="reference") search_field={type:"char",string:orig_field.string};
             else if (orig_field.type=="float") search_field={type:"float_range",string:orig_field.string};
+            else if (orig_field.type=="decimal") search_field={type:"float_range",string:orig_field.string};
             else if (orig_field.type=="integer") search_field={type:"float_range",string:orig_field.string}; // XXX
             else if (orig_field.type=="date" || orig_field.type=="datetime") search_field={type:"date_range",string:orig_field.string};
             else if (orig_field.type=="boolean") search_field={type:"selection",selection:[["yes","Yes"],["no","No"]],string:orig_field.string};
@@ -173,7 +174,7 @@ var Search=NFView.extend({
             if (!v) continue;
             var f=get_field(this.context.collection.name,n);
             var sf=model.get_field(n);
-            if ((f.type=="float") || (f.type=="date")) {
+            if ((f.type=="float") || (f.type=="date") || (f.type=='decimal')) {
                 if (v[0]) {
                     var clause=[n,">=",v[0]];
                     condition.push(clause);
