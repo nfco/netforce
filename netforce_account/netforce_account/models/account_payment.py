@@ -197,15 +197,6 @@ class Payment(Model):
             get_model("account.invoice").function_store(invoice_ids)
         if expense_ids:
             get_model("hr.expense").function_store(expense_ids)
-        #TODO just tempolary remove this
-        obj=self.browse(ids)[0]
-        return {
-            'next': {
-                'name': 'payment',
-                'mode': 'form',
-                'active_id': obj.id,
-            },
-        }
 
     def do_delete(self, ids, context={}):
         obj = self.browse(ids)[0]
