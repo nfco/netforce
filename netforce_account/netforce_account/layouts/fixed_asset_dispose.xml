@@ -3,6 +3,7 @@
     <group form_layout="stacked">
         <field name="date" span="2"/>
         <field name="loss_acc_id" span="2" condition='[["type","!=","view"]]'/>
+        <field name="journal_id" required="1" span="2"/>
     </group>
     <foot replace="1">
         <button string="Dispose" type="success" method="dispose"/>
