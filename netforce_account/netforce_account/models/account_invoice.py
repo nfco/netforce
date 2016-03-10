@@ -523,6 +523,8 @@ class Invoice(Model):
 
     def to_draft(self, ids, context={}):
         obj = self.browse(ids)[0]
+        for credit_note in obj.credit_notes:
+            credit_note.delete()
         if obj.state != "waiting_payment":
             raise Exception("Invalid status")
         if obj.move_id:
