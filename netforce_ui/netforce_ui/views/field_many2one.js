@@ -113,7 +113,7 @@ var FieldMany2One=NFView.extend({
         //log("XXXXXXXXXXXXXXXXXX",required);
         if (required && !this.data.readonly) {
             this.$el.addClass("nf-required-field");
-        /*this.data.required=true;*/
+            this.data.required=true;
         } else {
             this.data.required=false;
         }
@@ -197,7 +197,7 @@ var FieldMany2One=NFView.extend({
     },
 
     show_required: function() {
-        this.$el.find(".label-text").append(" <span style='color:#e32'>*</span>");
+        this.$el.find(".label-text").append(" <span style='color:#e32'></span>");
     },
 
     btn_mousedown: function(e) {
