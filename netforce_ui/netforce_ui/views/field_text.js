@@ -64,8 +64,17 @@ var FieldText=NFView.extend({
         } else {
             this.$el.show();
         }
-        if (field.required && !this.data.readonly) {
+        var required=false;
+        if (field.required!=null) required=field.required;
+        if (this.options.required!=null) required=this.options.required;
+        if (attrs.required!=null) required=attrs.required;
+        if (required && !this.data.readonly) {
             this.$el.addClass("nf-required-field");
+        }
+        if (required) {
+            model.set_required(name);
+        } else {
+            model.set_not_required(name);
         }
         var err=model.get_field_error(name);
         if (err) {

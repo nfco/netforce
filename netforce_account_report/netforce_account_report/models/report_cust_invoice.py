@@ -40,8 +40,9 @@ class ReportCustInvoice(Model):
         contact_id = defaults.get("contact_id")
         if contact_id:
             contact_id = int(contact_id)
-        date_from = defaults.get("date_from")
-        date_to = defaults.get("date_to")
+        datenow = datetime.now().strftime("%Y-%m-%d")
+        date_from = defaults.get("date_from",datenow)
+        date_to = defaults.get("date_to",datenow)
         return {
             "contact_id": contact_id,
             "date_from": date_from,
@@ -76,8 +77,8 @@ class ReportCustInvoice(Model):
         if contact_id:
             q += " AND l.contact_id=%s"
             args.append(contact_id)
-        else:
-            q += " AND l.contact_id IS NULL"  # XXX
+        #else:
+            #q += " AND l.contact_id IS NULL"  # XXX
         if not show_details:
             q += " AND (l.reconcile_id IS NULL OR r.balance!=0)"
         q += " ORDER BY COALESCE(l.due_date,m.date),l.id"

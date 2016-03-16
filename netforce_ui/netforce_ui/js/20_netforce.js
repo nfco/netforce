@@ -1659,9 +1659,15 @@ window.NFModel=Backbone.Model.extend({
             var required=this.required_fields[n];
             var v=this.get(n);
             //log("n",n,"req",required,"v",v);
-            if (required && !v && v!=0) {
-                errors[n]="Missing value";
-                ok=false;
+            if (required){
+                var t=typeof(v);
+                if(t!='number' && _.isEmpty(v)){
+                    errors[n]="Missing value";
+                    ok=false;
+                }else if(t=='number' && v==0){
+                    errors[n]="Missing value";
+                    ok=false;
+                }
             }
             if (f.type=="one2many") {
                 if (v instanceof NFCollection) {

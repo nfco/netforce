@@ -648,10 +648,10 @@ var FormView=NFView.extend({
                     string: $el.attr("string"),
                     method: $el.attr("method"),
                     action: $el.attr("action"),
+                    next: $el.attr("next"),
                     action_context: $el.attr("action_context"),
                     size: $el.attr("size")||"large",
                     type: $el.attr("type"),
-                    next: $el.attr("next"),
                     icon: $el.attr("icon"),
                     states: $el.attr("states"),
                     perm: $el.attr("perm"),
@@ -660,6 +660,15 @@ var FormView=NFView.extend({
                     confirm: $el.attr("confirm"),
                     context: context
                 };
+                if (opts['method']=='_save') {
+                        opts['next']=function() {
+                            var action={name:that.next_action,active_id:that.model.id,form_view_xml:that.options.view_xml};
+                            if (that.next_action_options) {
+                                _.extend(action,qs_to_obj(that.next_action_options));
+                            }
+                            exec_action(action);
+                        };
+                }
                 if (that.active_id) {
                     opts.action_options="refer_id="+that.active_id;
                 }
@@ -676,6 +685,7 @@ var FormView=NFView.extend({
                                 action_options: $el2.attr("action_options"),
                                 action_context: $el2.attr("action_context"),
                                 states: $el2.attr("states"),
+                                next: $el2.attr("next"),
                                 confirm: $el2.attr("confirm"),
                                 perm: $el2.attr("perm"),
                                 context: context

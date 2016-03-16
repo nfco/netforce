@@ -74,7 +74,21 @@ var ButtonGroup=NFView.extend({
                     success: function() {
                         set_flash("success","Changes saved successfully.");
                         if (that.options.next) {
-                            exec_action({name:that.options.next});
+                            log("NEXT",that.options.next);
+                            next=that.options.next;
+                            if (_.isFunction(next)) {
+                                next();
+                                return;
+                            }
+                            if (next=="_reload") {
+                                window.location.reload(); // XXX
+                                return;
+                            }
+                            var action={name:next};
+                            if (that.options.next_options) {
+                                _.extend(action,qs_to_obj(that.options.next_options));
+                            }
+                            exec_action(action);
                         } else {
                             model.trigger("reload");
                         }

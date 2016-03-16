@@ -647,6 +647,33 @@ class Invoice(Model):
         else:
             data["amount_rounding"] = 0
         data["amount_total"] = data["amount_subtotal"] + data["amount_tax"] + data["amount_rounding"]
+
+        paid = 0
+        for pmt in data['payments']:
+            if pmt['payment_id'] == data['payment_id']:
+                continue
+            if data['type'] == pmt['type']:
+                paid -= pmt['amount_currency']
+            else:
+                paid += pmt['amount_currency']
+        if data['inv_type'] in ("invoice", "debit"):
+            cred_amt = 0
+            for alloc in data['credit_notes']:
+                cred_amt += alloc['amount']
+            data["amount_due"] = data["amount_total"] - paid - cred_amt
+            data["amount_paid"] = paid + cred_amt
+        elif data['inv_type'] in ("credit", "prepay", "overpay"):
+            cred_amt = 0
+            for alloc in data['credit_alloc']:
+                cred_amt += alloc['amount']
+            for pmt in data['payments']:
+                payment=get_model("account.payment").browse(pmt['payment_id'])
+                if payment.type == data['type']:
+                    cred_amt += pmt['amount']
+                else:
+                    cred_amt -= pmt['amount']
+            data["amount_credit_remain"] = data["amount_total"] - cred_amt
+            data["amount_due"] = -data["amount_credit_remain"]
         return data
 
     def onchange_product(self, context):

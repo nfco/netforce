@@ -150,6 +150,7 @@ class Settings(Model):
     }
     _defaults = {
         "package": "free",
+        'stock_cost_auto_compute': True,
     }
 
     def get_address_str(self, ids, context={}):
