@@ -292,3 +292,7 @@ a.nf-list-header {
 .nf-required-field input, .nf-required-field select, .nf-required-field textarea, td.nf-required-field {
     background-color: #ffffcc;
 }
+
+.nav-sub{
+    width: 75%;
+}
