@@ -41,6 +41,7 @@ class TrackCateg(Model):
         "sub_tracks": fields.One2Many("account.track.categ","parent_id","Sub Tracking Categories"),
         "self_id": fields.Many2One("account.track.categ","Tracking Category",function="_get_related",function_context={"path":"id"}), # XXX: for some UI stuff
         "currency_id": fields.Many2One("currency","Currency"),
+        # XXX: Multi company ?
     }
     _order = "type,code,full_name"
     _constraints = ["_check_cycle"]

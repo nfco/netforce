@@ -7,4 +7,5 @@
     <field name="product_id" select="1"/>
     <field name="ref"/>
     <field name="lot_id"/>
+    <field name="cogs_account_id"/>
 </search>

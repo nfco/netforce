@@ -100,6 +100,7 @@ var Group=NFView.extend({
                     nolabel: $el.attr("nolabel"),
                     invisible: $el.attr("invisible"),
                     onchange: $el.attr("onchange"),
+                    click_action: $el.attr("click_action"),
                     count: $el.attr("count")||1,
                     password: $el.attr("password"),
                     size: $el.attr("size"),
@@ -122,6 +123,7 @@ var Group=NFView.extend({
                     show_buttons: $el.attr("show_buttons"),
                     auto_save: $el.attr("auto_save"),
                     email: $el.attr("email"),
+                    help: $el.attr("help"),
                     form_layout: form_layout,
                     context: ctx
                 };
@@ -151,6 +153,7 @@ var Group=NFView.extend({
                                 readonly: $el.attr("readonly")||that.options.readonly,
                                 default_count: $el.attr("count")||1,
                                 noadd: $el.attr("noadd"),
+                                noremove: $el.attr("noremove"),
                                 context: params.context
                             }
                             var view=Sheet.make_view(opts2);

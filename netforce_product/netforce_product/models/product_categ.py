@@ -42,6 +42,7 @@ class ProductCateg(Model):
         "purchase_account_id": fields.Many2One("account.account", "Purchase Account", multi_company=True),
         "purchase_tax_id": fields.Many2One("account.tax.rate", "Purchase Tax"),
         "cost_method": fields.Selection([["standard", "Standard Cost"], ["average", "Weighted Average"], ["fifo", "FIFO"], ["lifo", "LIFO"]], "Costing Method"),
+        "cogs_account_id": fields.Many2One("account.account", "Cost Of Goods Sold Account", multi_company=True),
     }
     _order = "name"
     _constraints = ["_check_cycle"]

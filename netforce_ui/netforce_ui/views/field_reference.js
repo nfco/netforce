@@ -62,7 +62,9 @@ var FieldReference=NFView.extend({
             var relation=res[0];
             var id=res[1];
             var action=find_details_action(relation,id);
-            if (action) {
+            if (this.options.click_action) {
+                this.data.link_url="#name="+this.options.click_action+"&active_id="+this.context.data.id;
+            } else if (action) {
                 this.data.link_url="#"+obj_to_qs(action);
             } else {
                 this.data.link_url=null;
@@ -122,6 +124,7 @@ var FieldReference=NFView.extend({
             that.$menu
                 .on('click', $.proxy(that.menu_click, that))
                 .on('mouseenter', 'li', $.proxy(that.menu_mouseenter, that));
+            that.$el.find("a.help").tooltip();
         }
         if (value) {
             if (_.isArray(value)) {

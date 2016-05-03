@@ -23,7 +23,7 @@
                 <field name="employee_id" span="2" attrs='{"invisible":[["pay_type","!=","claim"]]}' onchange="onchange_employee"/>
                 <newline/>
                 <field name="account_id" span="2" condition='[["company_id","=",company_id],["or",["type","in",["bank","cash","cheque"]],["enable_payment","=",true]]]'/>
-                <field name="currency_id" span="2"/>
+                <field name="currency_id" span="2" onchange="update_invoice_line"/>
                 <field name="tax_type" span="2" attrs='{"invisible":[["pay_type","in",["invoice","overpay"]]]}'/>
                 <field name="tax_no" span="2" attrs='{"invisible":[["pay_type","!=","direct"]]}'/>
                 <newline/>
@@ -46,8 +46,8 @@
                         <field name="adjust_lines" nolabel="1" count="5">
                             <list>
                                 <field name="account_id" condition='[["type","!=","view"],["company_id","=",parent.company_id]]'/>
-                                <field name="tax_comp_id"/>
-                                <field name="tax_base"/>
+                                <field name="tax_comp_id" onchange="update_adjust"/>
+                                <field name="tax_base" onchange="update_adjust"/>
                                 <field name="track_id"/>
                                 <field name="track2_id"/>
                                 <field name="amount" onchange="update_amounts"/>
@@ -133,7 +133,7 @@
             <newline/>
             <field name="sequence_id" condition='[["type","in",["pay_in","pay_out"]]]' onchange="onchange_sequence"/>
             <newline/>
-            <field name="currency_rate"/>
+            <field name="currency_rate" onchange="update_invoice_line"/>
         </tab>
     </tabs>
     <field name="company_id" invisible="1"/>

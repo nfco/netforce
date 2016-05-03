@@ -53,7 +53,8 @@
                 </a>
             </div>
             <div class="collapse navbar-collapse" id="nf-navbar-collapse">
-                <ul class="nav navbar-nav">
+
+                <ul class="nav navbar-nav nav-sub">
                     {{#each menu_items context=context}}
                         {{#if submenu_items}}
                             {{#view "item" string=string perm=perm perm_check_admin=perm_check_admin pkg=pkg dropdown=1 context=context}}
@@ -74,6 +75,7 @@
                         {{/if}}
                     {{/each}}
                 </ul>
+
                 <ul class="nav navbar-nav navbar-right">
                     {{#view "item" string="Main Menu" icon="home" dropdown="1" context=context}}
                         {{#each ../mainmenu_items context=context}}

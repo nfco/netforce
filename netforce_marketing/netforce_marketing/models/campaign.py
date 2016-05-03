@@ -106,7 +106,7 @@ class Campaign(Model):
                     "obj": target,
                 }
                 obj.email_tmpl_id.create_email(
-                    data, name_id="mkt.target,%d" % target.id, related_id="mkt.campaign,%d" % obj.id, mailbox_id=obj.mailbox_id)
+                    data, name_id="mkt.target,%d" % target.id, related_id="mkt.campaign,%d" % obj.id, mailbox_id=obj.mailbox_id.id)
                 count += 1
                 db = get_connection()
                 db.commit()

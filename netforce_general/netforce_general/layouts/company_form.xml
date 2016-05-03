@@ -4,6 +4,7 @@
     <field name="code"/>
     <field name="description"/>
     <field name="contact_id"/>
+    <field name="prevent_trans" help="Not allow to create any transaction"/>
     <related>
         <field name="comments"/>
     </related>

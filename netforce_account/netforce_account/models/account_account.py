@@ -50,8 +50,8 @@ class Account(Model):
             ["cust_deposit", "Customer Deposit"],
             ["cur_liability", "Current Liability"],
             ["noncur_liability", "Non-current Liability"],
+            ["_group", "Equity "],#add some space for prevent import wrong type
             ["equity", "Equity"],
-            ["_group", "Equity"],
             ["_group", "Expenses"],
             ["cost_sales", "Cost of Sales"],
             ["expense", "Expense"],

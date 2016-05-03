@@ -14,9 +14,9 @@
     <field name="lines" count="10" nolabel="1">
         <list>
             <field name="product_id" onchange="onchange_product"/>
-            <field name="lot_id" onchange="onchange_lot"/>
             <field name="qty"/>
             <field name="uom_id"/>
+            <field name="lot_id" onchange="onchange_lot"/>
             <field name="container_from_id"/>
             <field name="container_to_id" create="1"/>
             <field name="location_from_id" readonly="1"/>

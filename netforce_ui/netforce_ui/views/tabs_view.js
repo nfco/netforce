@@ -175,6 +175,7 @@ var TabsView=NFView.extend({ // XXX: rename to tabs
                                 count: parseInt($el.attr("count")),
                                 readonly: $el.attr("readonly")||that.options.readonly,
                                 noadd: $el.attr("noadd"),
+                                noremove: $el.attr("noremove"),
                                 context: params.context
                             }
                         } else if (view_cls_name=="form_list_view") { // XXX

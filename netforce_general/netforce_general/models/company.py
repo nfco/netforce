@@ -36,6 +36,7 @@ class Company(Model):
         "description": fields.Text("Description"),
         "comments": fields.One2Many("message", "related_id", "Comments"),
         "contact_id": fields.Many2One("contact","Contact"),
+        'prevent_trans': fields.Boolean("Prevent Transaction"),
     }
     _order = "name"
     _constraints = ["_check_cycle"]

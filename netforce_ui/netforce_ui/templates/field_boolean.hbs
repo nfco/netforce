@@ -2,6 +2,9 @@
     {{#unless options.nolabel}}
         <label class="control-label">
             {{t string}}
+            {{#if options.help}}
+                <a href="#" class="help" data-toggle="toolip" data-placement="top" title data-original-title="{{options.help}}"><sup>?</sup></a>
+            {{/if}}
         </label>
     {{/unless}}
     <div class="controls">
@@ -23,6 +26,9 @@
                 {{#unless options.nolabel}}
                     {{t string}}
                 {{/unless}}
+                {{#if options.help}}
+                    <a href="#" class="help" data-toggle="toolip" data-placement="top" title data-original-title="{{options.help}}"><sup>?</sup></a>
+                {{/if}}
             </label>
         </div>
     </div>

@@ -464,11 +464,23 @@ class SaleReturn(Model):
                     remain_qty = line.qty - line.qty_invoiced
                     if remain_qty <= 0:
                         continue
+
                     sale_acc_id=None
                     if prod:
-                        sale_acc_id=prod.sale_account_id.id
+                        #1. get account from product
+                        sale_acc_id=prod.sale_account_id and prod.sale_account_id.id or None
+                        # 2. if not get from master/parent product
                         if not sale_acc_id and prod.parent_id:
                             sale_acc_id=prod.parent_id.sale_account_id.id
+                        # 3. if not get from product category
+                        categ=prod.categ_id
+                        if categ and not sale_acc_id:
+                            sale_acc_id= categ.sale_account_id and categ.sale_account_id.id or None
+
+                    #if not sale_acc_id:
+                        #raise Exception("Missing sale account for product [%s] " % prod.name )
+
+
                     line_vals = {
                         "product_id": prod.id,
                         "description": line.description,

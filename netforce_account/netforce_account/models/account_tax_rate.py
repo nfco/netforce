@@ -70,6 +70,8 @@ class TaxRate(Model):
 
     # XXX: remove this
     def compute_tax(self, tax_id, amt, tax_type="tax_ex", wht=False):
+        if not tax_id:
+            return 0
         if tax_type == "no_tax":
             return 0
         obj = self.browse(tax_id)

@@ -4,6 +4,7 @@
     <field name="from_id"/>
     <field name="to_id"/>
     <field name="subject" size="xlarge"/>
+    <field name="related_id" readonly="1"/>
     <newline/>
     <field name="body" width="600"/>
 </form>

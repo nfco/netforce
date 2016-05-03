@@ -17,7 +17,7 @@
         <field name="track_id" span="2"/>
         <field name="track2_id" span="2"/>
         <newline/>
-        <field name="date_purchase" span="2"/>
+        <field name="date_purchase" onchange="onchange_date" span="2"/>
         <field name="price_purchase" span="2"/>
         <field name="invoice_id" span="2"/>
         <newline/>

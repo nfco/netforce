@@ -69,7 +69,9 @@ class ReportDepSchedule(Model):
                 "purchase_date": asset.date_purchase,
                 "book_val_from": asset.book_val,
                 "track_id": asset.track_id.id,
+                "track_name": asset.track_id.name,
                 "track2_id": asset.track2_id.id,
+                "track2_name": asset.track2_id.name,
             }
             assets[asset.id] = vals
         for asset in get_model("account.fixed.asset").search_browse(cond, context={"date": date_to}):
@@ -88,6 +90,7 @@ class ReportDepSchedule(Model):
                 groups.append(cur_group)
             cur_group["lines"].append(line)
         for group in groups:
+            group['lines'] = sorted(group['lines'],key=lambda l: l['purchase_date'])
             group.update({
                 "total_book_val_from": sum([l["book_val_from"] for l in group["lines"]]),
                 "total_accum_dep": sum([l["accum_dep"] for l in group["lines"]]),

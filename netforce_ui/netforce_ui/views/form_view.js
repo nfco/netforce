@@ -408,6 +408,7 @@ var FormView=NFView.extend({
                                     default_count: parseInt($el.attr("default_count"))||1,
                                     readonly: $el.attr("readonly")||that.readonly,
                                     noadd: $el.attr("noadd"),
+                                    noremove: $el.attr("noremove"),
                                     context: params.context
                                 }
                             } else if (view_cls_name=="form_list_view") { // XXX

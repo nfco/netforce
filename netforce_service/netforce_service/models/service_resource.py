@@ -38,7 +38,7 @@ class Resource(Model):
         "documents": fields.One2Many("document", "related_id", "Documents"),
         "time_sheets": fields.One2Many("time.sheet", "resource_id", "Time Sheets"),
         "user_id": fields.Many2One("base.user", "User"),
-        "type": fields.Selection([["person","Person"],["machine","Machine"]],"Resource Type"),
+        "type": fields.Selection([["person","Person"],["machine","Machine"]],"Resource Type",search=True),
         "product_id": fields.Many2One("product","Product"),
     }
     _order = "name"
@@ -72,8 +72,12 @@ class Resource(Model):
                     vals[obj.id] = False
                     continue
             if obj.product_categs and prod_ids:
-                categ_ids = [c.id for c in obj.product_categs]
-                res = get_model("product").search([["id", "in", prod_ids], ["categs.id", "child_of", categ_ids]])
+                categ_ids = []
+                for c in obj.product_categs:
+                    categ_ids.append(c.id)
+                    if c.parent_id:
+                        categ_ids.append(c.parent_id.id)
+                res = get_model("product").search([["id", "in", prod_ids], ["categ_id", "child_of", categ_ids]])
                 if not res:
                     vals[obj.id] = False
                     continue

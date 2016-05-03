@@ -72,7 +72,7 @@ var SearchView=NFView.extend({
                     search_field={type:"many2one",relation:orig_field.relation,string:orig_field.string};
                 }
             } else if (orig_field.type=="text") search_field={type:"char",string:orig_field.string};
-            else if (orig_field.type=="reference") search_field={type:"char",string:orig_field.string};
+            else if (orig_field.type=="reference") search_field={type:"reference",string:orig_field.string,selection:orig_field.selection};
             else if (orig_field.type=="float") search_field={type:"float_range",string:orig_field.string};
             else if (orig_field.type=="decimal") search_field={type:"float_range",string:orig_field.string};
             else if (orig_field.type=="integer") search_field={type:"float_range",string:orig_field.string}; // XXX
@@ -194,6 +194,12 @@ var SearchView=NFView.extend({
             } else if (f.type=="selection") {
                 var clause=[n,"=",v];
                 condition.push(clause);
+            } else if (f.type=="reference") {
+                if(_.isArray(v)){
+                    v=v[0];
+                }
+                var clause=[n,"=",v];
+                condition.push(clause);
             } else {
                 var clause=[n,"ilike",v];
                 condition.push(clause);
@@ -248,6 +254,9 @@ var SearchView=NFView.extend({
                     log(n,"<-",v);
                 }
             } else if (f.type=="selection") {
+                that.model.set(n,v);
+                log(n,"<-",v);
+            } else if (f.type=="reference") {
                 that.model.set(n,v);
                 log(n,"<-",v);
             }

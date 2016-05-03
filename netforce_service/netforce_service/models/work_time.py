@@ -51,6 +51,7 @@ class WorkTime(Model):
         "track_entries": fields.One2Many("account.track.entry","related_id","Tracking Entries"),
         "track_id": fields.Many2One("account.track.categ","Tracking",function="get_track_categ"),
         "cost_amount": fields.Decimal("Cost Amount",function="get_cost_amount"),
+        #"agg_cost_amount": fields.Decimal("Cost Amount", agg_function=["sum", "cost_amount"]),
         "sale_price": fields.Decimal("Hourly Rate"),
     }
     _order = "date,resource_id.name"
@@ -145,7 +146,10 @@ class WorkTime(Model):
     def get_track_categ(self,ids,context={}):
         vals={}
         for obj in self.browse(ids):
-            track_id=obj.project_id.track_id.id
+            track_id=None
+            project_id=obj.project_id
+            if project_id and project_id.track_id:
+                track_id=project_id.track_id.id
             rel=obj.related_id
             if rel.track_id:
                 track_id=rel.track_id.id
@@ -155,6 +159,7 @@ class WorkTime(Model):
     def get_cost_amount(self,ids,context={}):
         vals={}
         for obj in self.browse(ids):
+            # Use standard price in product in resource
             prod=obj.resource_id.product_id
             amt=(prod.cost_price or 0)*(obj.actual_hours or 0)
             vals[obj.id]=amt

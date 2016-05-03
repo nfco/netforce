@@ -20,6 +20,12 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
+
 var Gantt=NFView.extend({
     _name: "gantt",
     events: {
@@ -156,7 +162,7 @@ var Gantt=NFView.extend({
                 if (err) {
                     throw "Failed to get gantt data: "+err.message;
                 }
-                var data=_.sortBy(data,function(obj) {
+                /*var data=_.sortBy(data,function(obj) {
                     var vals=[];
                     if (this.group_field_name) {
                         var group_field_value=render_field_value(obj[this.group_field_name],this.group_field);
@@ -173,7 +179,7 @@ var Gantt=NFView.extend({
                     var start_field_value=render_field_value(obj[this.start_field_name],this.start_field);
                     vals.push(start_field_value);
                     return vals.join("_");
-                }.bind(this));
+                }.bind(this));*/
                 log("sorted gantt data",data);
                 var proj_data={
                     tasks: [],

@@ -19,6 +19,7 @@
             <field name="purchase_account_id"/>
             <field name="purchase_tax_id"/>
             <field name="cost_method"/>
+            <field name="cogs_account_id"/>
         </tab>
     </tabs>
     <related>

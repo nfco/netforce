@@ -21,7 +21,7 @@
 from netforce.model import Model, fields, get_model
 from netforce.template import render_template
 import time
-
+from pprint import pprint
 
 class Template(Model):
     _name = "email.template"
@@ -97,6 +97,7 @@ class Template(Model):
         }
         if mailbox_id:
             vals["mailbox_id"] = mailbox_id
+        pprint(vals)
         email_id = get_model("email.message").create(vals)
         return email_id
 

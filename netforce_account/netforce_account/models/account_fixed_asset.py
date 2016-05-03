@@ -263,5 +263,14 @@ class FixedAsset(Model):
                         'track2_id': asset.track2_id.id,
                     })
 
+    def onchange_date(self, context={}):
+        data = context["data"]
+        ctx = {
+            "date": data["date_purchase"],
+        }
+        number = self._get_number(context=ctx)
+        data["number"] = number
+        return data
+
 
 FixedAsset.register()

@@ -2,6 +2,7 @@
     <field name="number"/>
     <field name="name"/>
     <field name="product_id"/>
+    <field name="serial_no"/>
     <field name="lot_id"/>
     <field name="parent_id"/>
     <field name="contact_id"/>

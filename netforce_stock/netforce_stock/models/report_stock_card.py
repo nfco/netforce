@@ -157,7 +157,7 @@ class ReportStockCard(Model):
         prod_locs = {}
 
         db = get_connection()
-        q = "SELECT m.id,m.date,m.ref,m.related_id,m.lot_id,l.number AS lot_num,m.invoice_id,i.number AS invoice_num,m.product_id,m.location_from_id,m.location_to_id,m.qty,m.uom_id,m.cost_amount,m.qty2 FROM stock_move m LEFT JOIN stock_lot l ON l.id=m.lot_id LEFT JOIN account_invoice i ON i.id=m.invoice_id LEFT JOIN product p on m.product_id=p.id WHERE m.date>=%s AND m.date<=%s"
+        q = "SELECT m.id,m.date,m.ref,m.related_id,m.lot_id,l.number AS lot_num,m.invoice_id,i.tax_no AS tax_no,i.number AS invoice_num,m.product_id,m.location_from_id,m.location_to_id,m.qty,m.uom_id,m.cost_amount,m.qty2 FROM stock_move m LEFT JOIN stock_lot l ON l.id=m.lot_id LEFT JOIN account_invoice i ON i.id=m.invoice_id LEFT JOIN product p on m.product_id=p.id WHERE m.date>=%s AND m.date<=%s"
         args = [date_from + " 00:00:00", date_to + " 23:59:59"]
         if product_id:
             q += " AND m.product_id=%s"
@@ -259,6 +259,8 @@ class ReportStockCard(Model):
                     "invoice_id": r.invoice_id,
                     "invoice_num": r.invoice_num,
                 }
+                if r.tax_no:
+                    line['invoice_num']+=" ["+r.tax_no+"]"
                 if r.location_to_id == loc_id and r.location_from_id == loc_id:
                     continue
                 elif r.location_to_id == loc_id:

@@ -115,7 +115,7 @@ class SaleOrderLine(Model):
                 order = line.order_id
                 new_cur=get_model("currency").convert(amt, order.currency_id.id, settings.currency_id.id)
                 vals[line.id] = {
-                    "amount": round(amt,2),
+                    "amount": Decimal(round(float(amt),2)), # convert to float because Decimal gives wrong rounding
                     "amount_discount": disc,
                     "promotion_amount": prom_amt,
                     "amount_cur": new_cur and new_cur or None,

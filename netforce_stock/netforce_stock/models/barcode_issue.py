@@ -19,7 +19,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from netforce.model import Model, fields, get_model
-
+from netforce.utils import get_data_path
 
 class BarcodeIssue(Model):
     _name = "barcode.issue"
@@ -37,6 +37,17 @@ class BarcodeIssue(Model):
     _defaults = {
         "state": "done",
     }
+
+    def onchange_product(self, context):
+        data = context["data"]
+        path = context["path"]
+        line = get_data_path(data, path, parent=True)
+        prod_id = line.get("product_id")
+        if not prod_id:
+            return {}
+        prod = get_model("product").browse(prod_id)
+        line["uom_id"] = prod.uom_id.id
+        return data
 
     def onchange_related(self, context={}):
         data = context["data"]

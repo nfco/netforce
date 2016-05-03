@@ -85,7 +85,7 @@ class Move(Model):
     }
     _order = "date desc,id desc"
 
-    def get_difference(self, ids, context): 
+    def get_difference(self, ids, context):
         vals = {}
         for obj in self.browse(ids):
             vals[obj.id] = {

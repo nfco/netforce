@@ -185,6 +185,8 @@ class Invoice(Model):
                     name = "Overpayment"
             if obj.ref:
                 name += " [%s]" % obj.ref
+            if obj.tax_no:
+                name+=", "+obj.tax_no
             vals.append((obj.id, name))
         return vals
 
@@ -213,6 +215,8 @@ class Invoice(Model):
         sale_ids = []
         purch_ids = []
         for inv in self.browse(ids):
+            if inv.inv_type == "prepay" and inv.type == "out" and "can_delete" not in context:
+                raise Exception("Can't delete invoice with Prepayment. Please delete by using To Draft option in payment.")
             if inv.inv_type not in ("prepay", "overpay"):
                 if inv.state not in ("draft", "waiting_approval", "voided"):
                     raise Exception("Can't delete invoice with this status")
@@ -279,7 +283,8 @@ class Invoice(Model):
             if obj.currency_id.id == settings.currency_id.id:
                 currency_rate = 1
             else:
-                rate_from = obj.currency_id.get_rate(date=obj.date)
+                rate_type=obj.type=="out" and "sell" or "buy"
+                rate_from = obj.currency_id.get_rate(date=obj.date,rate_type=rate_type)
                 if not rate_from:
                     raise Exception("Missing currency rate for %s" % obj.currency_id.code)
                 if not settings.currency_id:
@@ -376,7 +381,8 @@ class Invoice(Model):
                 if obj.currency_id.id == settings.currency_id.id:
                     currency_rate = 1
                 else:
-                    rate_from = obj.currency_id.get_rate(date=obj.date)
+                    rate_type=obj.type=="out" and "sell" or "buy"
+                    rate_from = obj.currency_id.get_rate(date=obj.date,rate_type=rate_type)
                     if not rate_from:
                         raise Exception("Missing currency rate for %s" % obj.currency_id.code)
                     rate_to = settings.currency_id.get_rate(date=obj.date)

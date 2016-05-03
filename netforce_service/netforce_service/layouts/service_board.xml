@@ -2,6 +2,6 @@
     <hpanel>
         <widget string="Time Spent Per Project" action="time_project_widget" span="12"/>
         <widget string="Time Spent Per Resource" action="time_resource_widget" span="12"/>
-        <widget string="Pending Service Orders" action="job_widget"/>
+        <widget string="Pending Service Orders" action="job_widget" span="12"/>
     </hpanel>
 </board>

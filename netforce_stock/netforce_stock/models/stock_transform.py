@@ -48,11 +48,11 @@ class Transform(Model):
         if not seq_id:
             return None
         while 1:
-            num = get_model("sequence").get_next_number(seq_id)
+            num = get_model("sequence").get_next_number(seq_id,context)
             res = self.search([["number", "=", num]])
             if not res:
                 return num
-            get_model("sequence").increment_number(seq_id)
+            get_model("sequence").increment_number(seq_id,context)
 
     _defaults = {
         "state": "draft",
@@ -171,6 +171,13 @@ class Transform(Model):
             }
             lines.append(line_vals)
         data["source_lines"] = lines
+        return data
+
+    def onchange_date(self, context={}):
+        data = context["data"]
+        context['date']=data['date']
+        num=self._get_number(context=context)
+        data["number"] = num
         return data
 
 Transform.register()

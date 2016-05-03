@@ -52,8 +52,9 @@ class Product(Model):
         "image": fields.File("Image"),
         "cost_method": fields.Selection([["standard", "Standard Cost"], ["average", "Weighted Average"], ["fifo", "FIFO"], ["lifo", "LIFO"]], "Costing Method"),
         "cost_price": fields.Decimal("Cost Price", scale=6),
-        "stock_in_account_id": fields.Many2One("account.account", "Stock Input Account", multi_company=True),
-        "stock_out_account_id": fields.Many2One("account.account", "Stock Output Account", multi_company=True),
+        "stock_in_account_id": fields.Many2One("account.account", "Stock Input Account", multi_company=True), # XXX: deprecated
+        "stock_out_account_id": fields.Many2One("account.account", "Stock Output Account", multi_company=True), # XXX: deprecated
+        "cogs_account_id": fields.Many2One("account.account", "Cost Of Goods Sold Account", multi_company=True),
         "purchase_account_id": fields.Many2One("account.account", "Purchase Account", multi_company=True),
         "purchase_tax_id": fields.Many2One("account.tax.rate", "Purchase Tax"),
         "supplier_id": fields.Many2One("contact", "Default Supplier"),  # XXX: deprecated

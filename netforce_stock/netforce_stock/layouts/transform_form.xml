@@ -8,7 +8,7 @@
     </head>
     <tabs>
         <tab string="General">
-            <field name="date"/>
+            <field name="date" onchange="onchange_date"/>
             <field name="number"/>
             <field name="location_id"/>
             <field name="related_id"/>

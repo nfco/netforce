@@ -20,6 +20,12 @@
                 Number
             </th>
             <th>
+                Tracking-1
+            </th>
+            <th>
+                Tracking-2
+            </th>
+            <th>
                 Purchase Price
             </th>
             <th>
@@ -58,6 +64,12 @@
                             {{asset_number}}
                         </a>
                     </td>
+                    <td>
+                        {{track_name}}
+                    </td>
+                    <td>
+                        {{track2_name}}
+                    </td>
                     <td style="text-align:right">
                         {{currency purchase_price}}
                     </td>
@@ -79,7 +91,7 @@
                 </tr>
             {{/each}}
             <tr>
-                <th colspan="5">
+                <th colspan="7">
                 </th>
                 <th style="text-align:right">
                     {{currency total_book_val_from}}
@@ -95,7 +107,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <th colspan="5">
+            <th colspan="7">
                 Total
             </th>
             <th style="text-align:right">

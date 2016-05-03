@@ -66,6 +66,7 @@ class Move(Model):
         "alloc_costs": fields.One2Many("landed.cost.alloc","move_id","Allocated Costs"),
         "alloc_cost_amount": fields.Decimal("Allocated Costs",scale=6,function="get_alloc_cost_amount"),
         "track_id": fields.Many2One("account.track.categ","Track"),
+        "cogs_account_id": fields.Many2One("account.account","COGS Account",function="_get_related",function_context={"path":"product_id.cogs_account_id"},function_search="_search_related",search=True),
     }
     _order = "date desc,id desc"
 
@@ -166,8 +167,11 @@ class Move(Model):
 
     def write(self, ids, vals, context={}):
         prod_ids = []
-        for obj in self.browse(ids):
-            prod_ids.append(obj.product_id.id)
+        if "qty" in vals or "state" in vals: # XXX: change this
+            for obj in self.browse(ids):
+                prod_ids.append(obj.product_id.id)
+                if obj.related_id:
+                    obj.related_id.function_store() # XXX: very slow, change this
         super().write(ids, vals, context=context)
         prod_id = vals.get("product_id")
         if prod_id:
@@ -269,7 +273,15 @@ class Move(Model):
             self.post(ids,context=context)
         self.update_lots(ids,context=context)
         self.set_reference(ids,context=context)
+        self.check_periods(ids,context=context)
         print("<<<  stock_move.set_done")
+
+    def check_periods(self,ids,context={}):
+        for obj in self.browse(ids):
+            d=obj.date[:10]
+            res=get_model("stock.period").search([["date_from","<=",d],["date_to",">=",d],["state","=","posted"]])
+            if res:
+                raise Exception("Failed to validate stock movement because stock period already posted")
 
     def set_reference(self,ids,context={}):
         for obj in self.browse(ids):

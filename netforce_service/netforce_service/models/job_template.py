@@ -50,6 +50,7 @@ class JobTemplate(Model):
         obj = self.browse(ids)[0]
         contract = None
         item = None
+        contact_id = None
         if sale_id:
             sale = get_model("sale.order").browse(sale_id)
             contact_id = sale.contact_id.id

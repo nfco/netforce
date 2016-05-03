@@ -44,4 +44,9 @@ class TaxComponent(Model):
             vals.append((obj.id, name))
         return vals
 
+    def name_search(self, name, condition=[], limit=None, context={}):
+        cond = [["or", ["name", "ilike", name], ["tax_rate_id.name", "=ilike", name + "%"]], condition]
+        ids = self.search(cond, limit=limit)
+        return self.name_get(ids, context)
+
 TaxComponent.register()

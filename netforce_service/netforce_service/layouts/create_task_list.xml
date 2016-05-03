@@ -1,5 +1,6 @@
 <form model="create.task.list" title="Create Task List">
     <field name="template_id"/>
+    <field name="sequence"/>
     <newline/>
     <field name="project_id"/>
     <field name="milestone_id"/>

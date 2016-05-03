@@ -472,6 +472,11 @@ class Picking(Model):
         }
         if obj.related_id:
             vals["related_id"] = "%s,%d" % (obj.related_id._model, obj.related_id.id)
+
+        #in case goods issue copy it's reference
+        else:
+            vals["related_id"] = "%s,%d" % ("stock.picking", obj.id)
+
         for line in obj.lines:
             line_vals = {
                 "product_id": line.product_id.id,
@@ -479,12 +484,13 @@ class Picking(Model):
                 "uom_id": line.uom_id.id,
                 "location_from_id": line.location_to_id.id,
                 "location_to_id": line.location_from_id.id,
+
+                # try copy cost
+                "cost_price": line.cost_price,
+                "cost_price_cur": line.cost_price,
+                "cost_amount": line.cost_price * line.qty, # why we have to compute like this
             }
-            if obj.type == "in":
-                line_vals["unit_price"] = line.unit_price
             vals["lines"].append(("create", line_vals))
-        from pprint import pprint
-        pprint(vals)
         new_id = self.create(vals, {"pick_type": "in"})
         new_obj = self.browse(new_id)
         return {
@@ -820,11 +826,14 @@ class Picking(Model):
 
     def update_cost_price(self,context={}):
         data=context['data']
-        currency_rate=data['currency_rate']
+
+        currency_rate=data.get('currency_rate',1)
         settings=get_model("settings").browse(1)
+        currency_id = data.get("currency_id",settings.currency_id.id)
+
         for line in data['lines']:
             cost_price_cur=line.get("cost_price_cur") or 0
-            cost_price=get_model("currency").convert(cost_price_cur,data['currency_id'],settings.currency_id.id,rate=currency_rate)
+            cost_price=get_model("currency").convert(cost_price_cur,currency_id,settings.currency_id.id,rate=currency_rate)
             cost_amount=cost_price*(line['qty'] or 0)
             line["cost_price"]=cost_price
             line["cost_amount"]=cost_amount

@@ -299,3 +299,12 @@ def check_permission_other(perm):
         return True
     else:
         return False
+
+def allow_create_transaction():
+    db = database.get_connection()
+    allow=True
+    if _active_company:
+        res=db.query("select prevent_trans from company where id=%s"%(_active_company))
+        if res:
+            allow=not res[0]['prevent_trans']
+    return allow

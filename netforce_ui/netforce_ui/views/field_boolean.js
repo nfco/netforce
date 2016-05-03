@@ -81,6 +81,7 @@ var FieldBoolean=NFView.extend({
             this.$el.find("input").css({margin:"0"});
             this.$el.css({margin:"0"});
         }
+        this.$el.find("a.help").tooltip();
     },
 
     click: function(e) {

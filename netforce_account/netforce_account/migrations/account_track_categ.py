@@ -4,7 +4,7 @@ from netforce import migration
 
 class Migration(migration.Migration):
     _name="account.track.categ"
-    _version="5.2.0"
+    _version="3.1.1"
 
     def migrate(self):
         first_company = get_model("company").search_browse([[]])
@@ -13,7 +13,8 @@ class Migration(migration.Migration):
         setting = get_model("settings").browse(1)
         if setting.currency_id.id:
             for acc_track_categ in get_model("account.track.categ").search_browse([]):
-                acc_track_categ.write({"currency_id":setting.currency_id.id})
+                if not acc_track_categ.currency_id:
+                    acc_track_categ.write({"currency_id":setting.currency_id.id})
 
         #for company in get_model("company").search_browse([]):
             #set_active_company(company.id)

@@ -31,6 +31,7 @@ class Location(Model):
     _name_field = "name"
     #_key = ["code"]
     _string = "Location"
+    _multi_company = True
     _fields = {
         "name": fields.Char("Location Name", required=True, search=True, size=256),
         "code": fields.Char("Location Code", search=True),

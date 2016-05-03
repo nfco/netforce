@@ -43,7 +43,7 @@ var FieldSelection=NFView.extend({
         var name=this.options.name;
         this.$el.addClass("field-"+name);
         var model=this.context.model;
-        var value=translate(model.get(name));
+        var value=model.get(name);
         this.data.value=value;
         var field=model.get_field(name);
         if (!this.selection) {
@@ -139,6 +139,7 @@ var FieldSelection=NFView.extend({
             this.$el.find("select").css("width",this.options.width+"px");
             this.$el.css("width",this.options.width+"px");
         }
+        this.$el.find("a.help").tooltip();
     },
 
     listen_selection: function() {

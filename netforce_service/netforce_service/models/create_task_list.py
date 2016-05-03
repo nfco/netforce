@@ -9,6 +9,7 @@ class CreateTaskList(Model):
         "template_id": fields.Many2One("task.list.template","Template",required=True),
         "project_id": fields.Many2One("project","Project",required=True),
         "milestone_id": fields.Many2One("project.milestone","Milestone"),
+        "sequence": fields.Integer("Base Sequence"),
     }
 
     def create_task_list(self,ids,context={}):
@@ -21,6 +22,7 @@ class CreateTaskList(Model):
         d=date.today()
         for task_tmpl in template.task_templates:
             vals={
+                "sequence": (obj.sequence or 0)+(task_tmpl.sequence or 0),
                 "project_id": obj.project_id.id,
                 "milestone_id": obj.milestone_id.id,
                 "task_list_id": list_id,

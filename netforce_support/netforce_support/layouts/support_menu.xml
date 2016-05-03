@@ -1,10 +1,10 @@
 <menu string="Support">
     <item string="Dashboard" action="support_board"/>
     <item string="Issues" action="issue"/>
-    <item string="Settings">
-        <item string="Issue Types" action="issue_type"/>
-    </item>
     <item string="Reports">
         <item string="Issue Analysis" action="issue_analysis"/>
+    </item>
+    <item string="Settings">
+        <item string="Issue Types" action="issue_type"/>
     </item>
 </menu>

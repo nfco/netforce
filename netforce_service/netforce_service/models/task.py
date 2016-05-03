@@ -65,7 +65,7 @@ class Task(Model):
         "related_id": fields.Reference([["job","Job"]],"Related To"),
         "depends_json": fields.Text("Task Dependencies (String)",function="get_depends_json"),
     }
-    _order = "priority,id"
+    _order = "project_id.number,sequence,id,priority"
 
     def _get_number(self, context={}):
         seq_id = get_model("sequence").find_sequence(type="task")
@@ -111,13 +111,15 @@ class Task(Model):
         data=context.get("data",{})
         date_start=data["date_start"]
         duration=data.get("duration",0)
-        data["date_end"]=self.calc_end_date(date_start,duration)
+        if date_start and duration:
+            data["date_end"]=self.calc_end_date(date_start,duration)
         return data
 
     def get_end_date(self,ids,context={}):
         vals={}
         for obj in self.browse(ids):
-            vals[obj.id]=self.calc_end_date(obj.date_start,obj.duration)
+            if obj.date_start and obj.duration:
+                vals[obj.id]=self.calc_end_date(obj.date_start,obj.duration)
         return vals
 
     def create(self,vals,*args,**kw):

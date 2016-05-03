@@ -237,7 +237,17 @@ class Model(object):
             if len(ids) > 1:
                 raise Exception("Duplicate keys: model=%s, %s" % (self._name, ", ".join(["%s='%s'"%(k,r[k]) for k in self._key])))
 
+    def check_permission_company(self,context={}):
+        """
+            System should not allow to create any transaction on a Group Company except reports
+            (since some reports will also create a record when click run report).
+        """
+        except_models=['company','log','field.default']
+        if not access.allow_create_transaction() and not self._transient and self._name not in except_models:
+            raise Exception("Permission denied!")
+
     def create(self, vals, context={}):
+        self.check_permission_company()
         if not access.check_permission(self._name, "create"):
             raise Exception("Permission denied (create %s, user_id=%s)" % (self._name, access.get_active_user()))
         vals = self._add_missing_defaults(vals, context=context)
@@ -607,7 +617,6 @@ class Model(object):
         joins, cond, w_args = self._where_calc(cond, context=context)
         args=w_args[:]
         ord_joins, ord_clauses = self._order_calc(order or self._order or "id")
-        # print("CONDITION:",cond)
         q = "SELECT tbl0.id FROM " + self._table + " tbl0"
         if joins:
             q += " " + " ".join(joins)
@@ -639,6 +648,7 @@ class Model(object):
 
     def write(self, ids, vals, check_time=False, context={}):
         #print(">>> WRITE",self._name,ids,vals)
+        self.check_permission_company()
         if not access.check_permission(self._name, "write", ids):
             raise Exception("Permission denied (write %s)" % self._name)
         if not ids or not vals:
@@ -808,6 +818,7 @@ class Model(object):
         self.trigger(ids, "write")
 
     def delete(self, ids, context={}):
+        self.check_permission_company()
         if not access.check_permission(self._name, "delete", ids):
             raise Exception("Permission denied (delete %s)" % self._name)
         if not ids:

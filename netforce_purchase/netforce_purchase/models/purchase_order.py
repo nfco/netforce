@@ -326,7 +326,7 @@ class PurchaseOrder(Model):
                 cost_price_cur/=prod.purchase_to_stock_uom_factor
             else:
                 purch_uom=line.uom_id
-            cost_price=get_model("currency").convert(cost_price_cur,obj.currency_id.id,settings.currency_id.id)
+            cost_price=get_model("currency").convert(cost_price_cur,obj.currency_id.id,settings.currency_id.id,date=pick_vals.get("date"))
             cost_amount=cost_price*remain_qty
             line_vals = {
                 "product_id": prod.id,
@@ -344,6 +344,7 @@ class PurchaseOrder(Model):
             raise Exception("Nothing left to receive")
         pick_id = get_model("stock.picking").create(pick_vals, {"pick_type": "in"})
         pick = get_model("stock.picking").browse(pick_id)
+        pick.set_currency_rate()
         return {
             "next": {
                 "name": "pick_in",
@@ -377,13 +378,29 @@ class PurchaseOrder(Model):
             remain_qty = line.qty - line.qty_invoiced
             if remain_qty <= 0:
                 continue
+            # get account for purchase invoice
+            purch_acc_id=None
+            if prod:
+                # 1. get from product
+                purch_acc_id=prod.purchase_account_id and prod.purchase_account_id.id or None
+                # 2. if not get from master / parent product
+                if not purch_acc_id and prod.parent_id:
+                    purch_acc_id=prod.parent_id.purchase_account_id.id
+                # 3. if not get from product category
+                categ=prod.categ_id
+                if categ and not purch_acc_id:
+                    purch_acc_id= categ.purchase_account_id and categ.purchase_account_id.id and None
+
+            #if not purch_acc_id:
+                #raise Exception("Missing purchase account configure for product [%s]" % prod.name)
+
             line_vals = {
                 "product_id": prod.id,
                 "description": line.description,
                 "qty": remain_qty,
                 "uom_id": line.uom_id.id,
                 "unit_price": line.unit_price,
-                "account_id": prod and prod.purchase_account_id.id or None,
+                "account_id": purch_acc_id,
                 "tax_id": line.tax_id.id,
                 "amount": line.amount,
             }

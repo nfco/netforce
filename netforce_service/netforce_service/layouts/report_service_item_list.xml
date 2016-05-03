@@ -4,7 +4,8 @@
     <field name="contact_id"/>
     <field name="project_id"/>
     <field name="product_id"/>
-    <field name="serial_no"/>
+    <!--<field name="serial_no"/>-->
+    <field name="lot_id"/>
     <field name="contact_id"/>
     <field name="commission_date"/>
     <field name="industry_id"/>

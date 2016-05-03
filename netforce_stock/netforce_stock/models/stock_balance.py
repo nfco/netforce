@@ -345,8 +345,7 @@ class StockBalance(Model):
 
     def search_supplier(self, clause, context={}):
         supplier_id = clause[2]
-        contact = get_model("contact").browse(supplier_id)
-        prod_ids = [p.product_id.id for p in contact.supplied_products]
+        prod_ids = get_model("product").search([['supplier_id','=',supplier_id]])
         return [["product_id", "in", prod_ids]]
 
     def get_totals(self, product_ids=None, location_ids=None, lot_ids=None, container_ids=None, date_from=None, date_to=None, virt_stock=False):

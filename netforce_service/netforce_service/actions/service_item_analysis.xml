@@ -2,7 +2,8 @@
     <field name="string">Service Item Analysis</field>
     <field name="view_cls">report_view</field>
     <field name="model">service.item</field>
-    <field name="group_select">year,quarter,month,week,contact_id,contact_id.categ_id,contact_id.business_area_id,contact_id.fleet_size_id,product_id,product_id.categ_id,product_id.brand_id,industry_id,application_id,state,addresses.country_id,addresses.province_id,addresses.city</field>
+    <field name="group_select">year,quarter,month,week,sale_date,arrival_date,contact_id,contact_id.categ_id,contact_id.business_area_id,contact_id.fleet_size_id,product_id,product_id.categ_id,product_id.brand_id,industry_id,application_id,state,addresses.country_id,addresses.province_id,addresses.city</field>
+    <field name="function_select">agg_last_counter</field>
     <field name="view_xml">report_service_item_list</field>
     <field name="menu">service_menu</field>
 </action>
