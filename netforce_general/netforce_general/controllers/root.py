@@ -48,6 +48,7 @@ class Root(Controller):
                 return
             self.redirect("/ui#name=login")
         finally:
-            db.commit()
+            if db:
+                db.commit()
 
 Root.register()

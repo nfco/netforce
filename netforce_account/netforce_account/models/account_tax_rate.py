@@ -80,6 +80,7 @@ class TaxRate(Model):
                 wht_rate += comp.rate or 0
             elif comp.type == "vat":
                 vat_rate += comp.rate or 0
+        base_amt = 0
         if tax_type == "tax_ex":
             base_amt = amt or 0
         elif tax_type == "tax_in":
