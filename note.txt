@@ -1,0 +1,5 @@
+test Git
+-Add
+-commit
+-push
+-pull request(merge)
