@@ -455,6 +455,10 @@ class SaleQuot(Model):
     def copy_to_sale_order(self,ids,context):
         id=ids[0]
         obj=self.browse(id)
+
+        if obj.state not in ("won"):
+            raise Exception("You can only copy to sale order in 'Won' state")
+
         sale_vals={
             "ref": obj.number,
             "quot_id": obj.id,
