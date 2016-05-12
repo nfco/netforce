@@ -137,7 +137,7 @@ class Contact(Model):
         "code": _get_number,
     }
     _order = "name"
-    _constraints=["check_email"]
+    _constraints=["check_email","check_duplicate_code"]
 
     def create(self, vals, **kw):
         if not vals.get("type"):
@@ -243,5 +243,13 @@ class Contact(Model):
                 continue
             if not utils.check_email_syntax(obj.email):
                 raise Exception("Invalid email for contact '%s'"%obj.name)
+
+    def check_duplicate_code(self,ids,context={}):
+        for obj in self.browse(ids):
+            if not obj.code:
+                continue
+            res=self.search([['code','=',obj.code]])
+            if res:
+                raise Exception("Duplicate code for contact '%s'"%obj.name)
 
 Contact.register()
