@@ -209,19 +209,28 @@ class Move(Model):
 
     def create_track_entries(self, ids, context={}):
         obj=self.browse(ids[0])
+        settings=get_model("settings").browse(1)
         for line in obj.lines:
             if line.track_id:
+                amt=line.credit-line.debit
+                if line.track_id.currency_id:
+                    amt=get_model("currency").convert(amt,settings.currency_id.id,line.track_id.currency_id.id)
                 vals={
+                    "date": obj.date,
                     "track_id": line.track_id.id,
-                    "amount": line.credit-line.debit,
+                    "amount": amt,
                     "description": line.description,
                     "move_id": obj.id,
                 }
                 get_model("account.track.entry").create(vals)
             if line.track2_id:
+                amt=line.credit-line.debit
+                if line.track2_id.currency_id:
+                    amt=get_model("currency").convert(amt,settings.currency_id.id,line.track2_id.currency_id.id)
                 vals={
+                    "date": obj.date,
                     "track_id": line.track2_id.id,
-                    "amount": line.credit-line.debit,
+                    "amount": amt,
                     "description": line.description,
                     "move_id": obj.id,
                 }

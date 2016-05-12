@@ -158,7 +158,7 @@ var Gantt=NFView.extend({
             if (this.depends_field_name) fields.push(this.depends_field_name);
             var condition=this.get_condition();
             console.log("condition",condition);
-            rpc_execute(this.options.model,"search_read",[condition,fields],{},function(err,data) {
+            rpc_execute(this.options.model,"search_read",[condition,fields],{limit:100},function(err,data) {
                 if (err) {
                     throw "Failed to get gantt data: "+err.message;
                 }

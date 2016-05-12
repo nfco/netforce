@@ -2,7 +2,7 @@
     <i class="icon-ellipsis-horizontal"></i>
 </td>
 {{#each fields context=context}}
-    <td class="sheet-cell{{#if readonly}}{{else}}{{#if required}} nf-required-field{{/if}}{{/if}}" data-field="{{name}}" data-view-cid="{{../view_cid}}" {{#if readonly}}data-readonly="1"{{/if}} style="{{#ifeq align "right"}}text-align:right;{{/ifeq}}{{#if invisible}}display:none;{{/if}}">
+<td class="sheet-cell{{#if readonly}}{{else}}{{#if required}} nf-required-field{{/if}}{{/if}}" data-field="{{name}}" data-view-cid="{{../view_cid}}" {{#if readonly}}data-readonly="1"{{/if}} style="{{#ifeq align "right"}}text-align:right;{{/ifeq}}{{#if invisible}}display:none;{{/if}}" {{#if invisible}}data-readonly="1"{{/if}}>
         {{field_value name context=context m2o_link=true click_action=click_action show_image=show_image scale=scale}}
     </td>
 {{/each}}

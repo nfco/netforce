@@ -13,6 +13,7 @@
             <field name="end_date"/>
             <field name="state"/>
             <field name="description"/>
+            <field name="notes"/>
             <field name="resources"/>
         </tab>
         <tab string="Costing">
@@ -22,6 +23,7 @@
             <field name="est_sub_tracks" readonly="1">
                 <list>
                     <field name="self_id"/>
+                    <field name="currency_id"/>
                     <field name="balance"/>
                 </list>
             </field>
@@ -31,6 +33,7 @@
             <field name="sub_tracks" readonly="1">
                 <list>
                     <field name="self_id"/>
+                    <field name="currency_id"/>
                     <field name="balance"/>
                 </list>
             </field>
@@ -38,6 +41,7 @@
     </tabs>
     <related>
         <field name="milestones"/>
+        <field name="invoices"/>
         <field name="jobs"/>
         <field name="tasks"/>
         <field name="work_time"/>

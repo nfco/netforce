@@ -51,6 +51,8 @@ class Project(Model):
         "issues": fields.One2Many("issue","project_id","Issues"),
         "resources": fields.Many2Many("service.resource","Resources"),
         "milestones": fields.One2Many("project.milestone","project_id","Milestones"),
+        "invoices": fields.One2Many("account.invoice","related_id","Invoices"),
+        "notes": fields.Text("Notes"),
     }
     _order = "start_date"
 
