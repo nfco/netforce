@@ -24,11 +24,30 @@ from netforce.model import Model, fields
 class ContactRelation(Model):
     _name = "contact.relation"
     _string = "Contact Relation"
+    _name_field="to_contact_id.name"
     _fields = {
         "from_contact_id": fields.Many2One("contact", "From Contact", required=True, on_delete="cascade"),
         "to_contact_id": fields.Many2One("contact", "To Contact", required=True, on_delete="cascade"),
         "rel_type_id": fields.Many2One("contact.relation.type", "Relation Type", required=True),
         "details": fields.Text("Details"),
     }
+
+    def name_get(self, ids, context={}):
+        res=self.browse(ids)
+        return [(r.id, r.to_contact_id.name) for r in res]
+
+    def name_search(self, name, condition=None, limit=None, context={}):
+        f = self._name_field or "name"
+        search_mode = context.get("search_mode")
+        if search_mode == "suffix":
+            cond = [[f, "=ilike", "%" + name]]
+        elif search_mode == "prefix":
+            cond = [[f, "=ilike", name + "%"]]
+        else:
+            cond = [[f, "ilike", name]]
+        if condition:
+            cond = [cond, condition]
+        ids = self.search(cond, limit=limit, context=context)
+        return self.name_get(ids, context=context)
 
 ContactRelation.register()

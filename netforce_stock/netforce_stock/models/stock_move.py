@@ -246,8 +246,9 @@ class Move(Model):
         self.write(ids,{"state":"done"},context=context)
         for obj in self.browse(ids):
             prod=obj.product_id
-            prod_ids.append(prod.id)
             pick=obj.picking_id
+            if pick.type in ('out','internal'): # compute cost only GI and GT
+                prod_ids.append(prod.id)
             vals={}
             if not obj.qty2 and prod.qty2_factor:
                 qty2=get_model("uom").convert(obj.qty,obj.uom_id.id,prod.uom_id.id)*prod.qty2_factor

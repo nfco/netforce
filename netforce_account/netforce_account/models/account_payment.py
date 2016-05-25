@@ -1311,4 +1311,14 @@ class Payment(Model):
         data = self.update_amounts(context)
         return data
 
+    def onchange_claim(self,context={}):
+        data=context['data']
+        path=context['path']
+        line=get_data_path(data,path,parent=True)
+        exp_id=line['expense_id']
+        if exp_id:
+            exp=get_model('hr.expense').browse(exp_id)
+            line['amount']=exp.amount_due
+        return data
+
 Payment.register()
