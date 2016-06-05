@@ -10,6 +10,7 @@
     <field name="pin_code" password="1"/>
     <field name="company_id"/>
     <field name="company2_id"/>
+    <field name="url"/>
     <related>
         <field name="comments"/>
     </related>
