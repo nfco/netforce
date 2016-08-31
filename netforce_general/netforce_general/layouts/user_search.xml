@@ -3,4 +3,5 @@
     <field name="name"/>
     <field name="email"/>
     <field name="profile_id"/>
+    <field name="company_id"/>
 </search>
