@@ -20,6 +20,7 @@
 
 from netforce.model import Model, fields, get_model
 from netforce.access import get_active_company, get_active_user
+from netforce.utils import get_data_path
 import time
 
 
@@ -122,11 +123,10 @@ class Borrow(Model):
 
     def onchange_product(self, context={}):
         data = context["data"]
-        lines = data["lines"]
-        for line in lines:
-            product_id = line.get("product_id")
-            if not product_id:
-                continue
+        path = context["path"]
+        line = get_data_path(data, path, parent=True)
+        product_id = line.get("product_id")
+        if product_id:
             product = get_model("product").browse(product_id)
             line["qty"] = 1
             line["uom_id"] = product.uom_id.id
