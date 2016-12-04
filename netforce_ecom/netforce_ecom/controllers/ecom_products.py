@@ -152,6 +152,7 @@ class Products(BaseController):
     def get(self):
         db = get_connection()
         try:
+            description =""
             ctx = self.context
             categ_id=self.get_argument("categ_id",None)
             if categ_id:
@@ -192,8 +193,19 @@ class Products(BaseController):
                     "name": categ.name, "image": categ.image if categ.sub_categories else None,
                     "last_level_categs": get_last_level(categ),
                 }
+                if categ.description:
+                    description = categ.description
+                else:
+                    desc = categ
+                    while desc.parent_id:
+                        desc = desc.parent_id
+                        if desc.description:
+                            description = desc.description
+                            break;
                 while categ.parent_id:
                     categ = categ.parent_id
+                if description:
+                    ctx["title_description"] = description
                 cond_filter_categ.append(["categ_id","child_of",categ.id])
                 ctx["categ"] = categ_ctx
             if brand_id:
