@@ -115,6 +115,11 @@ class PickValidate(Model):
             action = "pick_out"
         elif pick.type == "internal":
             action = "pick_internal"
+        ## active function store at sale order
+        if pick.related_id:
+            if pick.related_id._model == 'sale.order':
+                so_id = pick.related_id.id
+                get_model("sale.order").function_store([so_id])
         return {
             "next": {
                 "name": action,
