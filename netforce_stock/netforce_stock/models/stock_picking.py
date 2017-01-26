@@ -187,6 +187,11 @@ class Picking(Model):
             get_model("stock.move").set_done(move_ids,context=context)
             obj.write({"state":"done","done_by_id":user_id},context=context)
             obj.set_currency_rate()
+            ## active function store at sale order
+            if obj.related_id:
+                if obj.related_id._model == 'sale.order':
+                    so_id = obj.related_id.id
+                    get_model("sale.order").function_store([so_id])
         self.check_order_qtys(ids)
         self.create_bundle_pickings(ids)
         self.trigger(ids,"done")
