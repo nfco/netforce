@@ -29,6 +29,9 @@ var FormView=NFView.extend({
 
     initialize: function(options) {
         //log("form_view.initialize",this);
+        //hidden remove separator
+        this.spt_list=[];
+        this.spt_rm=false;
         var that=this;
         NFView.prototype.initialize.call(this,options);
         if (this.options.form_layout) {
@@ -104,6 +107,7 @@ var FormView=NFView.extend({
         this.data.breads=breads;
         this.render_waiting();
         if (this.active_id) {
+            if(this.active_id==1 && model_name=='base.user' && this.context.user_id!=1) { this.$el.html("<h4>Permission Denied!</h4>"); return this };
             var ctx=clean_context(_.extend({},this.context,this.options));
             var opts={
                 field_names:field_names,
@@ -149,7 +153,10 @@ var FormView=NFView.extend({
                 var $el=that.$form.find("head field");
                 if ($el.length>0) {
                     var name=$el.attr("name");
-                    that.data.head_title="<b>"+field_value(name,that.data.context)+"</b>";
+                    var hide_opts=is_hidden({type:"field", model:that.options.model, name: name});
+                    if(!hide_opts){
+                        that.data.head_title="<b>"+field_value(name,that.data.context)+"</b>";
+                    }
                 }
                 if (that.$form.attr("show_company")) {
                     that.data.show_company=true;
@@ -217,8 +224,10 @@ var FormView=NFView.extend({
                 field_names: field_names,
                 context: ctx
             };
-            nf_execute(model_name,"default_get",[],opts,function(err,data) {
+            nf_execute(model_name,"default_get_data",[],opts,function(err,res) {
                 if (err) throw "ERROR: "+err;
+                var data=res[0];
+                that.data.context.field_default=res[1];
                 that.model=new NFModel(data,{name:model_name});
                 that.model.on("reload",that.reload,that);
                 that.data.context.data=data;
@@ -243,7 +252,10 @@ var FormView=NFView.extend({
                 var $el=that.$form.find("head field");
                 if ($el.length>0) {
                     var name=$el.attr("name");
-                    that.data.head_title="<b>"+field_value(name,that.data.context)+"</b>";
+                    var hide_opts=is_hidden({type:"field", model:that.options.model, name: name});
+                    if(!hide_opts){
+                        that.data.head_title="<b>"+field_value(name,that.data.context)+"</b>";
+                    }
                 }
                 var attrs=that.eval_attrs();
                 that.readonly=attrs.readonly;
@@ -312,6 +324,19 @@ var FormView=NFView.extend({
             var tag=$el.prop("tagName");
             if (tag=="field") {
                 var name=$el.attr("name");
+
+                var hide_opts=is_hidden({type:tag, model:that.options.model, name: name});
+                if(hide_opts){
+                    var sp_rm=hide_opts.separator_remove;
+                    if(sp_rm=='before' && that.spt_list){
+                        var cid=that.spt_list.pop();
+                        body.find("#"+cid).last().remove();
+                    }else if(sp_rm=='after'){
+                        that.spt_rm=!that.spt_rm;
+                    }
+                    return;
+                }
+
                 var focus=$el.attr("focus");
                 if(focus){that.focus_field=name;}
                 var field=that.model.get_field(name);
@@ -402,6 +427,7 @@ var FormView=NFView.extend({
                                         focus: $el2.attr("focus"),
                                         create: $el2.attr("create"),
                                         search_mode: $el2.attr("search_mode"),
+                                        selection: $el2.attr("selection"),
                                         scale: $el2.attr("scale"),
                                         string: $el2.attr("string"),
                                         attrs: $el2.attr("attrs")
@@ -421,6 +447,9 @@ var FormView=NFView.extend({
                                 }
                             } else if (view_cls_name=="form_list_view") { // XXX
                                 var opts2={
+                                    noadd: $el.attr("noadd"),
+                                    noremove: $el.attr("noremove"),
+                                    readonly: $el.attr("readonly"),
                                     model: field.relation,
                                     list_layout: $list,
                                     context: params.context
@@ -462,6 +491,11 @@ var FormView=NFView.extend({
                 col+=span;
                 that.field_views[name]=view;
             } else if (tag=="separator") {
+                //hidden remove separator
+                if(that.spt_rm){
+                    that.spt_rm=!that.spt_rm;
+                    return;
+                }
                 var span=$el.attr("span")
                 if (span) cols=parseInt(span);
                 else span=12;
@@ -471,9 +505,15 @@ var FormView=NFView.extend({
                 var opts={
                     string: $el.attr("string")
                 };
+
+                var hide=is_hidden({type:"separator", model:that.options.model, name: opts.string});
+                if(hide) return;
+
                 var view=Separator.make_view(opts);
                 cell.append("<div id=\""+view.cid+"\" class=\"view\"></div>");
                 col+=span;
+                //hidden
+                that.spt_list.push(view.cid);
             } else if (tag=="newline") {
                 col+=12;
             } else if (tag=="tabs") {
@@ -845,6 +885,7 @@ var FormView=NFView.extend({
         //log("render_form_related",this,context);
         var that=this;
         var model=this.model;
+
         if (!model.id) return "";
         var content=$("<div/>");
         this.$form.find("related").children().each(function() {
@@ -864,6 +905,10 @@ var FormView=NFView.extend({
                     nodelete : $el.attr("nodelete"),
                     context: context
                 };
+
+                var hide=is_hidden({type:tag, model:that.options.model, name:name});
+                if(hide) return;
+
                 var $list=$el.find("list");
                 if ($list.length>0) {
                     opts.list_layout=$list;

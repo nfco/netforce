@@ -167,12 +167,12 @@ class Contact(Model):
                 vals["name"] = vals["first_name"] + " " + vals["last_name"]
             else:
                 vals["name"] = vals["last_name"]
-        self.check_duplicate_code(vals.get('code'))
+        #self.check_duplicate_code(vals.get('code')) # use _key
         new_id = super().create(vals, **kw)
         return new_id
 
     def write(self, ids, vals, set_name=True, **kw):
-        self.check_duplicate_code(vals.get('code'))
+        #self.check_duplicate_code(vals.get('code')) # use _key
         super().write(ids, vals, **kw)
         if set_name:
             for obj in self.browse(ids):

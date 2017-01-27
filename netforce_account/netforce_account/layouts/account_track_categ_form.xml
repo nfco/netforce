@@ -3,7 +3,7 @@
     <field name="type"/>
     <field name="parent_id"/>
     <field name="code"/>
-    <field name="description" width="400" height="100"/>
+    <field name="description"/>
     <field name="balance"/>
     <field name="currency_id"/>
     <related>

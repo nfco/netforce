@@ -141,6 +141,7 @@ var SheetLine=NFView.extend({
             attrs: fld.attrs,
             create: fld.create,
             search_mode: fld.search_mode,
+            selection: fld.selection,
             show_image: fld.show_image,
             scale: fld.scale,
             context: this.context,

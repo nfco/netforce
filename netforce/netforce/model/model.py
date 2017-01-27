@@ -170,7 +170,13 @@ class Model(object):
             raise Exception("No such field %s in %s" % (name, self._name))
         return self._fields[name]
 
+    def default_get_data(self, field_names=None, context={}, load_m2o=True):
+        vals=self.default_get(field_names=field_names, context=context, load_m2o=load_m2o)
+        return vals, context.get('field_default')
+
     def default_get(self, field_names=None, context={}, load_m2o=True):
+        if not context.get('field_default'):
+            context['field_default']={}
         vals = {}
         if not field_names:
             field_names = self._defaults.keys()
@@ -199,6 +205,8 @@ class Model(object):
                     n = r.field
                     f = self._fields[n]
                     v = r.value
+                    fd=','.join([self._name, n, str(user_id)])
+                    context['field_default'].setdefault(fd,v)
                     if v:
                         if isinstance(f, fields.Many2One):
                             v = int(v)
@@ -625,6 +633,10 @@ class Model(object):
                               limit=limit, offset=offset, count=count, context=context)
             return res
         cond = [condition]
+        #other user should not see admin
+        user_id=access.get_active_user()
+        if self._name=='base.user' and user_id != 1:
+            cond.append([['id','!=',1]])
         if "active" in self._fields and context.get("active_test") != False:
             if not self._check_condition_has_active(condition):
                 cond.append(["active", "=", True])
@@ -1572,7 +1584,8 @@ class Model(object):
                         for rname in rnames:
                             rname = rname.strip()
                             res = mr.import_get(rname)
-                            rids.append(res)
+                            if res:
+                                rids.append(res)
                         v = [("set", rids)]
                 else:
                     if isinstance(f, (fields.One2Many,)):
@@ -1649,23 +1662,48 @@ class Model(object):
                     for vals2 in res:
                         vals[n].append(("create", vals2))
             return all_vals
-        line = 0
-        while line < len(rows):
-            while line < len(rows) and not _has_vals(line):
+        verify=context.get("verify")
+        print('VERIFY ', verify)
+        if verify:
+            line = 0
+            log=[]
+            while line < len(rows):
+                while line < len(rows) and not _has_vals(line):
+                    line += 1
+                if line == len(rows):
+                    break
+                line_start = line
                 line += 1
-            if line == len(rows):
-                break
-            line_start = line
-            line += 1
-            while line < len(rows) and not _has_vals(line):
+                while line < len(rows) and not _has_vals(line):
+                    line += 1
+                line_end = line
+                try:
+                    res = _read_objs(line_start=line_start, line_end=line_end)
+                    assert len(res) == 1
+                except Exception as e:
+                    log.append({
+                        'no': line_start,
+                        'description': str(e),
+                    })
+            return log
+        else:
+            line = 0
+            while line < len(rows):
+                while line < len(rows) and not _has_vals(line):
+                    line += 1
+                if line == len(rows):
+                    break
+                line_start = line
                 line += 1
-            line_end = line
-            try:
-                res = _read_objs(line_start=line_start, line_end=line_end)
-                assert len(res) == 1
-                self.merge(res[0])
-            except Exception as e:
-                raise Exception("Error row %d: %s" % (line_start + 2, e))
+                while line < len(rows) and not _has_vals(line):
+                    line += 1
+                line_end = line
+                try:
+                    res = _read_objs(line_start=line_start, line_end=line_end)
+                    assert len(res) == 1
+                    self.merge(res[0])
+                except Exception as e:
+                    raise Exception("Error row %d: %s" % (line_start + 2, e))
 
     def audit_log(self, operation, params, context={}):
         if not self._audit_log:

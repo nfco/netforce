@@ -1,0 +1,23 @@
+<div class="navbar navbar-inverse nf-navbar" style="margin-bottom:0">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img src="/static/img/menu_icon.png"/> Netforce
+            </a>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <ul class="breadcrumb nf-breadcrumb">
+        <li><a href="ui#name=manage_db">Manage Databases</a></li>
+    </ul>
+    <div class="page-header nf-page-header">
+        <h1>Download Database</h1>
+    </div>
+    {{view "flash" context=context}}
+    {{view "field" name="super_password" password="1" context=context}}
+    {{view "field" name="dbname" selection="get_databases" context=context}}
+    {{#view "form_actions" context=context}}
+        {{view "button" string="Download" type="primary" size="large" method="download_db" method_options="nosave=1" context=context}}
+    {{/view}}
+</div>

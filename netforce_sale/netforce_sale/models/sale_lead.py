@@ -29,7 +29,7 @@ class Lead(Model):
     _string = "Lead"
     _audit_log = True
     _multi_company = True
-    _key = ["name","user_id"]
+    _key = ["first_name","last_name"]
     _fields = {
         "user_id": fields.Many2One("base.user", "Lead Owner", required=True),
         "first_name": fields.Char("First Name", search=True),

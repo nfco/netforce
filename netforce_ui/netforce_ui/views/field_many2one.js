@@ -55,6 +55,12 @@ var FieldMany2One=NFView.extend({
         var model=this.context.model;
         var value=model.get(name);
         var field=model.get_field(name);
+
+        var field_default=this.context.field_default;
+        var fd=model.name+","+name+","+this.context.user_id;
+        if(field_default && field_default[fd]){
+            this.data.default_value=true;
+        }
         if (value && this.options.link) { // remove this later
             var id;
             if (_.isArray(value)) {

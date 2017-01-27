@@ -28,6 +28,9 @@ var Group=NFView.extend({
         NFView.prototype.initialize.call(this,options);
         this.$group=this.options.group_layout;
         this.listen_attrs();
+        //hidden remove separator
+        this.spt_list=[];
+        this.spt_rm=false;
     },
 
     render: function() {
@@ -60,6 +63,19 @@ var Group=NFView.extend({
             var tag=$el.prop("tagName");
             if (tag=="field") {
                 var name=$el.attr("name");
+
+                var hide_opts=is_hidden({type:tag, model:context.model.name, name: name});
+                if(hide_opts){
+                    var sp_rm=hide_opts.separator_remove;
+                    if(sp_rm=='before' && that.spt_list){
+                        var cid=that.spt_list.pop();
+                        body.find("#"+cid).last().remove();
+                    }else if(sp_rm=='after'){
+                        that.spt_rm=!that.spt_rm;
+                    }
+                    return;
+                }
+
                 var focus=$el.attr("focus");
                 if(focus && that.options.form_view){
                     that.options.form_view.focus_field=name;
@@ -154,6 +170,7 @@ var Group=NFView.extend({
                                     search_mode: $el2.attr("search_mode"),
                                     scale: $el2.attr("scale"),
                                     create: $el2.attr("create"),
+                                    selection: $el2.attr("selection"),
                                     attrs: $el2.attr("attrs")
                                 });
                             });
@@ -254,6 +271,11 @@ var Group=NFView.extend({
                 var view=Button.make_view(opts);
                 cell.append("<div id=\""+view.cid+"\" class=\"view\"></div>");
             } else if (tag=="separator") {
+                //hidden remove separator
+                if(that.spt_rm){
+                    that.spt_rm=!that.spt_rm;
+                    return;
+                }
                 var span=$el.attr("span")
                 if (span) cols=parseInt(span);
                 else span=12;
@@ -263,9 +285,15 @@ var Group=NFView.extend({
                 var opts={
                     string: $el.attr("string")
                 };
+
+                var hide=is_hidden({type:"separator", model:context.model.name, name: opts.string});
+                if(hide) return;
+
                 var view=Separator.make_view(opts);
                 cell.append("<div id=\""+view.cid+"\" class=\"view\"></div>");
                 col+=span;
+                //hidden
+                that.spt_list.push(view.cid);
             } else if (tag=="newline") {
                 col+=12;
             } else if (tag=="group") {

@@ -114,6 +114,8 @@ class Login(Model):
             dbname = request.headers.get("X-Database")
             return [(dbname, dbname)]
         db_list = sorted(database.list_databases())
+        if config.get("force_list_dbs"):
+            db_list = database.list_databases()
         return [(x, x) for x in db_list]
 
     def login(self, context={}):

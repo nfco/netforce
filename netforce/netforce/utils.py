@@ -377,9 +377,14 @@ def init_db():
     db = database.get_connection()
     db.execute("INSERT INTO settings (id) VALUES (1)")
     enc_pass=encrypt_password('1234')
-    db.execute("INSERT INTO profile (id,name,active,default_model_perms) VALUES (1,'System Admin',true,'full')")
+    db.execute("INSERT INTO profile (id,name,code,active,default_model_perms) VALUES (1,'System Admin','ADMIN',true,'full')")
     db.execute("INSERT INTO base_user (id,login,password,name,profile_id,active) VALUES (1,'admin',%s,'Admin',1,true)",enc_pass)
     db.execute("INSERT INTO company (id,name) VALUES (1,'Test Company')")
+
+    db.execute("ALTER SEQUENCE settings_id_seq RESTART WITH 2")
+    db.execute("ALTER SEQUENCE base_user_id_seq RESTART WITH 2")
+    db.execute("ALTER SEQUENCE company_id_seq RESTART WITH 2")
+    db.execute("ALTER SEQUENCE profile_id_seq RESTART WITH 2")
 
 _pack_int = Struct('>I').pack
 

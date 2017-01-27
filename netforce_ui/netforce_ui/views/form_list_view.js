@@ -82,7 +82,7 @@ var FormListView=NFView.extend({
         var html=$("<div/>");
         var collection=that.context.collection;
         if (!this.$list.find("head").attr("replace")) {
-            if (collection.length>0 && !this.options.readonly) {
+            if (collection.length>0 && !this.options.readonly && !this.options.noremove) {
                 var opts={
                     string: "Delete",
                     type: "danger",

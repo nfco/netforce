@@ -18,13 +18,30 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from . import root
-from . import function_store
-from . import call
-from . import login_token
-from . import listen
-from . import listen_poll
-from . import trigger
-from . import export
-from . import inline_help_body
-from . import download_db
+from netforce.controller import Controller
+import tornado.ioloop
+import time
+from netforce.database import get_connection,set_active_db
+from netforce.access import get_active_user
+from netforce.model import get_model
+import os
+from netforce import config
+
+class DownloadDB(Controller):
+    _path="/download_db"
+    
+    def get(self):
+        dbname=self.get_argument("dbname")
+        datenow=time.strftime("%Y-%m-%dT%H:%M:%S")
+        fname='%s.%s.sql.gz'%(dbname, datenow)
+        #path=os.path.join("static", "db", dbname, "files", fname)
+        path="/tmp/"+fname
+        os.system("pg_dump -vO %s | gzip > %s"%(dbname, path))
+        #data=open(os.path.join("static", "db", dbname, "files", fname),"rb").read()
+        data=open(path,"rb").read()
+        os.remove(path) #FIXME not work
+        self.write(data)
+        self.set_header("Content-Disposition", "attachment; filename=%s" % fname)
+        self.set_header("Content-Type", "text/plain")
+
+DownloadDB.register()

@@ -59,7 +59,11 @@ var ListView=NFView.extend({
             }
             this.data.tabs=[];
             var tab_no=0;
+            var hide_tabs=[];
             _.each(tabs,function(tab) {
+                var hide=is_hidden({type:"tab_action", model:that.options.model, name: tab[0]});
+                if(hide) return;
+                hide_tabs.push(tab);
                 that.data.tabs.push({
                     string: tab[0],
                     condition: tab[1],
@@ -69,8 +73,10 @@ var ListView=NFView.extend({
                 });
                 tab_no++;
             });
-            //log("tabs",this.data.tabs);
         }
+
+        this.options.tabs=hide_tabs; // for hidden
+
         this.modes=this.options.modes;
         if (!this.modes) this.modes="list,form";
         if (_.isString(this.modes)) {
@@ -98,6 +104,10 @@ var ListView=NFView.extend({
             var tag=$(this).prop("tagName");
             if (tag=="field") {
                 var name=$(this).attr("name");
+
+                var hide=is_hidden({type:tag, model:that.options.model, name: name});
+                if(hide) return;
+
                 var field=get_field(that.options.model,name);
                 field_names.push(name);
                 if (!$(this).attr("invisible")) {
@@ -302,10 +312,17 @@ var ListView=NFView.extend({
                 }
             }
         }
+        var that = this;
         this.$list.find("head").children().each(function() {
             var $el=$(this);
             var tag=$el.prop("tagName");
             if (tag=="button") {
+                var model = that.options.model;
+                var name = $el.attr("string");
+
+                var hide=is_hidden({type:'button', model:model, name: name});
+                if(hide) return;
+
                 var opts={
                     string: $el.attr("string"),
                     method: $el.attr("method"),
@@ -350,12 +367,23 @@ var ListView=NFView.extend({
                 };
                 var view=Button.make_view(opts);
                 html.append("<div id=\""+view.cid+"\" class=\"view\"></div>");
+
                 if(allow_import_export(that.context)){
                     var opts={
                         string: "Import",
                         action: "import_data",
                         action_options: "import_model="+that.options.model+"&next="+this.options.action_name,
                         icon: "download",
+                        context: that.data.context
+                    };
+                    var view=Button.make_view(opts);
+                    html.append("<div id=\""+view.cid+"\" class=\"view\"></div>");
+
+                    var opts={
+                        string: "Match Field",
+                        action: "match_field",
+                        action_options: "import_model="+that.options.model+"&next="+this.options.action_name,
+                        icon: "ok-sign",
                         context: that.data.context
                     };
                     var view=Button.make_view(opts);

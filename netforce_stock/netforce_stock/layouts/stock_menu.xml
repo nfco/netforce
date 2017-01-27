@@ -37,8 +37,16 @@
         <!--<item string="Stock Ordering" action="stock_order"/>-->
         <item string="Claim Bills" action="claim"/>
         <item string="Borrow Requests" action="borrow"/>
+        <!--
         <divider/>
         <header string="Barcode"/>
+        <item string="Goods Receipt" action="barcode_receive"/>
+        <item string="Goods Transfer" action="barcode_transfer"/>
+        <item string="Goods Issue" action="barcode_issue"/>
+        <item string="Validate Picking" action="barcode_validate"/>
+        -->
+    </item>
+    <item string="Barcode">
         <item string="Goods Receipt" action="barcode_receive"/>
         <item string="Goods Transfer" action="barcode_transfer"/>
         <item string="Goods Issue" action="barcode_issue"/>

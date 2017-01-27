@@ -94,6 +94,12 @@ var Sheet=NFView.extend({
         that.required_fields={};
         _.each(this.data.fields,function(field) {
             var name=field.name;
+
+            var hide=is_hidden({type:'field', model:model_name, name: name});
+            if(hide){
+                field.invisible=true;
+            }
+
             var f=get_field(model_name,name);
             if (f.type=="float") {
                 field.align="right";

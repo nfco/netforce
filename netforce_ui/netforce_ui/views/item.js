@@ -89,6 +89,12 @@ var Item=NFView.extend({
         if(this.options.color){
             this.$el.find('a').css({"color":this.options.color});
         }
+
+        if(this.context.model){
+            var hide=is_hidden({type:"item", model:this.context.model.name, name: this.options.string});
+            if(hide) this.$el.hide();
+        }
+
     },
 
     ontouch: function(e) { // bootstrap bug

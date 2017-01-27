@@ -37,6 +37,7 @@
                 <newline/>
                 <field name="bill_address_id" span="2" condition='[["contact_id","!=",null],["contact_id","=",contact_id]]'/>
                 <field name="ship_address_id" span="2" condition='[["contact_id","!=",null],["contact_id","=",contact_id]]'/>
+                <field name="ship_method_id" span="2"/>
                 <field name="delivery_slot_id" span="2"/>
             </group>
             <newline/>
@@ -55,7 +56,7 @@
                     <field name="amount"/>
                     <field name="location_id" onchange="onchange_location"/>
                     <field name="qty_stock" readonly="1"/>
-                    <field name="ship_method_id"/>
+                    <!--<field name="ship_method_id"/>-->
                     <field name="qty_delivered"/>
                     <field name="est_cost_amount"/>
                     <field name="est_profit_amount"/>

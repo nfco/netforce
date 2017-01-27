@@ -6,6 +6,11 @@
         {{/if}}
     </label>
 {{/unless}}
+{{#if default_value}}
+    <small>
+        <span class="glyphicon glyphicon-ok-sign" style="color:#3679b3"></span>
+    </small>
+{{/if}}
 <div class="{{#if horizontal}}col-sm-8{{/if}}">
     {{#if readonly}}
         <span style="word-wrap: break-word;" {{#if input}} class="uneditable-input {{#if options.size}}input-{{options.size}}{{/if}}"{{/if}}>

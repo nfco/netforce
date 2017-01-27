@@ -74,6 +74,11 @@ var FieldChar=NFView.extend({
         if (!check_package(pkg)) {
             this.data.disabled=true;
         }
+        var field_default=this.context.field_default;
+        var fd=model.name+","+name+","+this.context.user_id;
+        if(field_default && field_default[fd]){
+            this.data.default_value=true;
+        }
         NFView.prototype.render.call(this);
         if (this.options.invisible || attrs.invisible || !perms.perm_read) {
             this.$el.hide();

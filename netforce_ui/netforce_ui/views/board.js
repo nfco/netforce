@@ -27,6 +27,12 @@ var Board=NFView.extend({
         //log("board.render",this);
         var that=this;
         var view_name=this.options.view_xml;
+
+        var action=get_action(view_name);
+        var menu_view=get_xml_layout({name:action.menu});
+        var doc_view=$.parseXML(menu_view.layout);
+        var cur_mainmenu=$(doc_view).find("menu").attr("string");
+
         var board_view=get_xml_layout({name:view_name});
         var doc=$.parseXML(board_view.layout);
         this.data.title=this.options.string||$(doc).find(":root").attr("title")||this.context.company_name;
@@ -49,7 +55,12 @@ var Board=NFView.extend({
                     string: $el2.attr("string"),
                     action: action
                 };
-                vpanel.widgets.push(widget);
+
+                var hide=is_hidden({type:"dashboard", board_str: cur_mainmenu, name: widget.string});
+                if(!hide){
+                    vpanel.widgets.push(widget);
+                }
+
             });
             if (vpanel.widgets.length>0) {
                 that.data.vpanels.push(vpanel);
@@ -71,7 +82,12 @@ var Board=NFView.extend({
                     span: $el2.attr("span")||6,
                     action: action
                 };
-                hpanel.widgets.push(widget);
+
+                var hide=is_hidden({type:"dashboard", board_str: cur_mainmenu, name: widget.string});
+                if(!hide){
+                    hpanel.widgets.push(widget);
+                }
+
             });
             if (hpanel.widgets.length>0) {
                 that.data.hpanels.push(hpanel);

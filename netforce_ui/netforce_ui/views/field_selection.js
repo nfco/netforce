@@ -47,6 +47,17 @@ var FieldSelection=NFView.extend({
         var value=model.get(name);
         this.data.value=value;
         var field=model.get_field(name);
+        var model_name=model.name;
+        if(model_name=="_search" || model_name=="_report"){
+            var h=window.location.hash.substr(1);
+            var action=qs_to_obj(h);
+            action=get_action(action.name);
+            model_name=action.model;
+        }
+        var select_value=get_field_select({model: model_name, field: name});
+
+        if(select_value) this.selection=select_value;
+
         if (!this.selection) {
             this.selection=field.selection;
             if (this.options.selection) {
@@ -122,6 +133,11 @@ var FieldSelection=NFView.extend({
         var pkg=this.options.pkg||field.pkg;
         if (!check_package(pkg)) {
             this.data.disabled=true;
+        }
+        var field_default=this.context.field_default;
+        var fd=model.name+","+name+","+this.context.user_id;
+        if(field_default && field_default[fd]){
+            this.data.default_value=true;
         }
         NFView.prototype.render.call(that);
         var err=model.get_field_error(name);

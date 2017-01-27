@@ -1,0 +1,5 @@
+<action>
+    <field name="view">model_view</field>
+    <field name="model">download.db</field>
+    <field name="template">download_db</field>
+</action>

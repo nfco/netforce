@@ -479,6 +479,7 @@ class PurchaseOrder(Model):
                 "uom_id": line.uom_id.id,
                 "unit_price": line.unit_price,
                 "tax_id": line.tax_id.id,
+                "location_id": line.location_id.id,
             }
             vals["lines"].append(("create", line_vals))
         new_id = self.create(vals)

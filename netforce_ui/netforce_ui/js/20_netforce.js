@@ -58,6 +58,40 @@ function eval_condition(cond_str,ctx) { // XXX: remove later
     return eval_json(cond_str,ctx);
 }
 
+function rpc_execute_async(model,method,args,opts,cb) {
+    log("RPC",model,method,args,opts);
+    var params=[model,method];
+    params.push(args);
+    if (opts) {
+        params.push(opts);
+    }
+    $.ajax({
+        url: "/json_rpc",
+        async: false, // wait until finish
+        type: "POST",
+        data: JSON.stringify({
+            id: (new Date()).getTime(),
+            method: "execute",
+            params: params
+        }),
+        dataType: "json",
+        contentType: "application/json;charset=UTF-8",
+        success: function(data) {
+            if (data.error) {
+                log("RPC ERROR",model,method,data.error.message);
+            } else {
+                log("RPC OK",model,method,data.result);
+            }
+            if (cb) {
+                cb(data.error,data.result);
+            }
+        },
+        error: function() {
+            log("RPC ERROR",model,method);
+        }
+    });
+}
+
 function rpc_execute(model,method,args,opts,cb) {
     log("RPC",model,method,args,opts);
     var params=[model,method];
@@ -322,6 +356,17 @@ Handlebars.registerHelper("view",function(name,options) { // XXX
     }
     opts.inner=options.fn;
     opts.inverse=options.inverse;
+
+    if(name=='widget'){
+        var h=window.location.hash.substr(1);
+        var action=qs_to_obj(h);
+        action=get_action(action.name);
+        var menu_view=get_xml_layout({name:action.menu});
+        var doc_view=$.parseXML(menu_view.layout);
+        var cur_mainmenu=$(doc_view).find("menu").attr("string");
+        var hide=is_hidden({type:"dashboard", board_str: cur_mainmenu, name: opts.title});
+        if(hide) return;
+     }
     var view=view_cls.make_view(opts);
     var tag=view.tagName;
     return new Handlebars.SafeString('<'+tag+' id="'+view.cid+'" class="view"></'+tag+'>');
@@ -1011,6 +1056,7 @@ function set_actions() {
 
 nf_templates=null;
 
+
 function set_templates() {
     if (ui_params) {
         nf_templates=_.clone(ui_params.templates);
@@ -1045,6 +1091,8 @@ function load_ui_params_db(cb) {
             set_layouts();
             set_actions();
             set_templates();
+            set_hidden();
+            set_field_select();
             nf_open_db();
             cb();
         },
@@ -2206,6 +2254,75 @@ function allow_import_export(ctx) {
     if (ctx.prevent_import_export) return false; //XXX cookies
     if (check_other_permission("prevent_import_export")) return false;
     return true;
+}
+
+
+nf_hidden={};
+
+function set_hidden() {
+    if (ui_params_db) {
+        _.extend(nf_hidden,ui_params_db.hidden)
+    }
+}
+
+function is_hidden(params){
+    /*log("is_hidden.params ", params);*/
+    if(_.isEmpty(nf_hidden) || _.isEmpty(params)) return false;
+    if(!nf_hidden[params.type]) return false;
+    if(params.type=='sub_menu' || params.type=='dashboard' && params.board_str){
+        var str=nf_hidden[params.type][params.name];
+        if(str!=params.board_str){
+            return false;
+        }else{
+            return true;
+        }
+    }else if(params.type=='main_menu'){
+        var hide_item=nf_hidden[params.type][params.name];
+        if(hide_item){
+            return true;
+        }else{
+            return false;
+        }
+   }else{
+        if(!params.model || !params.name) return false;
+        // field, item, button, tab, search_view, report_view, separator(todo)
+        var res=nf_hidden[params.type][params.model];
+        if(_.isEmpty(res)){
+            return false;
+        }else{
+            var options=res[params.name];
+            return options;
+        }
+   }
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// OVERRIDE ///////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+field_select={};
+function set_field_select() {
+    if (ui_params_db) {
+        _.extend(field_select,ui_params_db.field_select)
+    }
+}
+
+function get_field_select(params){
+    if(_.isEmpty(field_select) || _.isEmpty(params)) return null;
+    if(!field_select[params.model]) return null;
+    var select=field_select[params.model][params.field];
+    if(!select) return null;
+    var value=[];
+    _.each(select.split(","), function(item){
+        var it=item.split("|");
+        if(it.length<2) return;
+        var k=it[0];
+        var v=it[1];
+        value.push([k,v]);
+    })
+    return value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

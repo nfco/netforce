@@ -54,11 +54,16 @@ var FormListItem=NFView.extend({
         body.append(row);
         var line_cols=0;
         var form_layout=this.options.form_layout||"horizontal";
+        var model=this.context.model;
         this.$form.children().each(function() {
             var $el=$(this);
             var tag=$el.prop("tagName");
             if (tag=="field") {
                 var name=$el.attr("name");
+
+                var hide_opts=is_hidden({type:"field", model:model.name, name: name});
+                if(hide_opts) return;
+
                 var span=$el.attr("span")
                 if (span) span=parseInt(span);
                 else span=6;

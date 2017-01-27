@@ -63,12 +63,20 @@ var Related=NFView.extend({
         var that=this;
         var field_names=[];
         var cols=[];
+        var model=this.context.model;
+
         this.$list.find("field").each(function() {
-            field_names.push($(this).attr("name"));
+
+            field_name=$(this).attr("name");
+
+            var hide=is_hidden({type: 'field', model: that.relation, name: field_name});
+            if(hide) return;
+
+            field_names.push(field_name);
             if (!$(this).attr("invisible")) {
                 cols.push({
                     col_type: "field",
-                    name: $(this).attr("name"),
+                    name:field_name,
                     target: $(this).attr("target"),
                     show_sum: $(this).attr("sum"),
                     preview: $(this).attr("preview")
@@ -77,7 +85,6 @@ var Related=NFView.extend({
         });
         this.data.colors=this.$list.attr("colors");
         this.data.cols=cols;
-        var model=this.context.model;
         var field=get_field(this.model_name,this.field_name);
         if (field.type=="one2many") {
             var relfield=get_field(this.relation,this.relfield);
@@ -174,6 +181,10 @@ var Related=NFView.extend({
                     perm: $el.attr("perm"),
                     context: context
                 };
+
+                var hide=is_hidden({type: 'button', model: that.relation, name: opts.string});
+                if(hide) return;
+
                 if ($el.attr("method")) {
                     opts.onclick=function() {
                         that.call_method($el.attr("method"));
@@ -182,6 +193,7 @@ var Related=NFView.extend({
                 if (!$el.attr("noselect")) {
                     opts.select=true;
                 }
+
                 var view=Button.make_view(opts);
                 html.append("<div id=\""+view.cid+"\" class=\"view\"></div>");
             }

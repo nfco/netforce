@@ -97,6 +97,10 @@ var ReportView=NFView.extend({
         var group_select=this.options.group_select.split(",");
         var selection=[];
         _.each(group_select,function(n) {
+
+            var hide=is_hidden({type:"field", model:that.options.model, name:n});
+            if(hide) return;
+
             var f=get_field_path(that.options.model,n);
             if (!f) throw "Invalid field: "+n;
             selection.push([n,f.string]);
@@ -127,6 +131,8 @@ var ReportView=NFView.extend({
         _.each(this.function_select,function(n) {
             var f=get_field_path(that.options.model,n);
             if (!f) throw "Invalid field: "+n;
+            var hide=is_hidden({type:"field", model:that.options.model, name:n});
+            if(hide) return;
             agg_select.push([n,f.string]);
         });
         var agg_field1={type:"selection",selection:agg_select,string:"Aggregate Field"};
@@ -440,6 +446,10 @@ var ReportView=NFView.extend({
             var tag=$el.prop("tagName");
             if (tag=="field") {
                 var name=$el.attr("name");
+
+                var hide=is_hidden({type:tag, model:that.options.model, name: name});
+                if(hide) return;
+
                 var cell=$('<div class="col-sm-2"/>');
                 if (col+2>12) {
                     row=$('<div class="row"/>');

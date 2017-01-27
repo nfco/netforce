@@ -692,7 +692,9 @@ class Invoice(Model):
         type = data["type"]
         path = context["path"]
         contact_id = data["contact_id"]
-        contact = get_model("contact").browse(contact_id)
+        contact = None
+        if contact_id:
+            contact = get_model("contact").browse(contact_id)
         line = get_data_path(data, path, parent=True)
         prod_id = line.get("product_id")
         if not prod_id:
@@ -710,7 +712,7 @@ class Invoice(Model):
             elif prod.categ_id and prod.categ_id.sale_account_id:
                 line["account_id"] = prod.categ_id.sale_account_id.id
 
-            if contact.tax_receivable_id:
+            if contact and contact.tax_receivable_id:
                 line["tax_id"] = contact.tax_receivable_id.id
             elif prod.sale_tax_id:
                 line["tax_id"] = prod.sale_tax_id.id
@@ -723,7 +725,7 @@ class Invoice(Model):
                 line["account_id"] = prod.purchase_account_id.id
             elif prod.categ_id and prod.categ_id.purchase_account_id:
                 line["account_id"] = prod.categ_id.purchase_account_id.id
-            if contact.tax_payable_id:
+            if contact and contact.tax_payable_id:
                 line["tax_id"] = contact.tax_payable_id.id
             elif prod.purchase_tax_id:
                 line["tax_id"] = prod.purchase_tax_id.id

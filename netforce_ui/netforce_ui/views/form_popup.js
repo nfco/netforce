@@ -87,7 +87,9 @@ var FormPopup=NFView.extend({
             });
         } else {
             var ctx=clean_context(_.extend({},this.context,this.options));
-            rpc_execute(model_name,"default_get",[],{field_names:field_names,context:ctx},function(err,data) {
+            rpc_execute(model_name,"default_get_data",[],{field_names:field_names,context:ctx},function(err,res) {
+                var data=res[0];
+                that.data.context.field_default=res[1];
                 that.model=new NFModel(data,{name:model_name});
                 that.model.on("reload",that.reload,that);
                 that.data.context.data=data;

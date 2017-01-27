@@ -1,0 +1,7 @@
+<action>
+    <field name="view">form_view</field>
+    <field name="model">match.field</field>
+    <field name="method">get_data</field>
+    <field name="view_layout">match_field</field>
+    <field name="menu">gen_menu</field>
+</action>

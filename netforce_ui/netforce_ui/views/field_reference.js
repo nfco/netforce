@@ -78,6 +78,16 @@ var FieldReference=NFView.extend({
         var that=this;
         var field=model.get_field(name);
         this.selection=field.selection;
+        var model_name=model.name;
+        if(model_name=="_search"){
+            var h=window.location.hash.substr(1);
+            var action=qs_to_obj(h);
+            action=get_action(action.name);
+            model_name=action.model;
+        }
+        var select_value=get_field_select({model: model_name, field: name});
+        if(select_value) this.selection=select_value;
+
         this.data.string=field.string;
         if (this.options.string) {
             this.data.string=this.options.string;

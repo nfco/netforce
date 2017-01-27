@@ -63,18 +63,18 @@ class Translation(Model):
     def create(self, *a, **kw):
         new_id = super().create(*a, **kw)
         static.clear_translations()
-        ipc.send_signal("clear_translation_cache")
+        #ipc.send_signal("clear_translation_cache")
         return new_id
 
     def write(self, *a, **kw):
         res = super().write(*a, **kw)
         static.clear_translations()
-        ipc.send_signal("clear_translation_cache")
+        #ipc.send_signal("clear_translation_cache")
 
     def delete(self, *a, **kw):
         res = super().delete(*a, **kw)
         static.clear_translations()
-        ipc.send_signal("clear_translation_cache")
+        #ipc.send_signal("clear_translation_cache")
 
     def get_translation(self, original, lang):
         cache = self._get_cache()

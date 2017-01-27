@@ -67,6 +67,7 @@ from . import inline_help
 from . import wkf_rule
 from . import create_db
 from . import copy_db
+from . import download_db
 from . import upgrade_db
 from . import delete_db
 from . import field_cache
@@ -90,3 +91,9 @@ from . import script
 from . import import_inline_help
 from . import reason_code
 from . import menu_access
+
+from . import match_field
+from . import match_field_line
+from . import match_field_log
+
+from . import import_field

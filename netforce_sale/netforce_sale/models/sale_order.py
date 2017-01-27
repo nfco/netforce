@@ -105,7 +105,7 @@ class SaleOrder(Model):
         "week": fields.Char("Week", sql_function=["week", "date"]),
         "pay_method_id": fields.Many2One("payment.method", "Payment Method",search=True),
         "sale_channel_id": fields.Many2One("sale.channel", "Sales Channel",search=True),
-        "related_id": fields.Reference([["sale.quot", "Quotation"], ["ecom.cart", "Ecommerce Cart"], ["purchase.order", "Purchase Order"]], "Related To"),
+        "related_id": fields.Reference([["sale.quot", "Quotation"], ["ecom.cart", "Ecommerce Cart"], ["purchase.order", "Purchase Order"]], "Related To", search=True),
         "est_costs": fields.One2Many("sale.cost","sale_id","Costs"),
         "est_cost_amount": fields.Float("Est. Cost Amount", function="get_est_profit", function_multi=True, store=True),
         "est_profit_amount": fields.Float("Est. Profit Amount", function="get_est_profit", function_multi=True, store=True),

@@ -255,5 +255,7 @@ def list_databases():
     if hide:
         hide_dbs = [x.strip() for x in hide.split(",")]
         db_list = [x for x in db_list if x not in hide_dbs]
+    if config.get("force_list_dbs") and config.get("databases"):
+        db_list=[d.replace(" ","") for d in config.get("databases").split(",")]
     db.close()
     return db_list

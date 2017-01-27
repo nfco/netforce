@@ -37,6 +37,8 @@ var Button=NFView.extend({
     render: function() {
         //log("button.render",this);
         var that=this;
+        var name=this.options.string;
+        var model=this.context.model;
         if (this.options.inner) {
             this.data.content=this.options.inner(this.data);
         }
@@ -106,6 +108,11 @@ var Button=NFView.extend({
             } else {
                 this.$el.show();
             }
+        }
+
+        if(model && name){
+            var hide=is_hidden({type: 'button', model: model.name, name: name});
+            if(hide) this.$el.hide();
         }
     },
 

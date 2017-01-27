@@ -61,6 +61,8 @@ var SearchView=NFView.extend({
         this.$layout.find("field").each(function() {
             var $el=$(this);
             var name=$el.attr("name");
+
+
             log("conv field: "+name);
             var orig_field=model_cls.fields[name];
             var search_field;
@@ -107,6 +109,10 @@ var SearchView=NFView.extend({
             var tag=$el.prop("tagName");
             if (tag=="field") {
                 var name=$el.attr("name");
+
+                var hide=is_hidden({type:tag, model:that.options.model, name: name});
+                if(hide) return;
+
                 var field=model.get_field(name);
                 var inc=2;
                 var cell=$('<div class="col-sm-2"/>');
