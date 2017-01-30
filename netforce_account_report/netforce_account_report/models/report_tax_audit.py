@@ -101,5 +101,4 @@ class ReportTaxAudit(Model):
         data["credit_lines"]=[]
         return data
 
-
 ReportTaxAudit.register()
